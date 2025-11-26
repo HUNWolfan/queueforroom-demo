@@ -7,8 +7,16 @@ import { query } from '~/db.server';
  * Docs: https://resend.com/docs
  */
 
-// Initialize Resend with API key from environment
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization of Resend client for Cloudflare Workers compatibility
+let resend: Resend | null = null;
+
+function getResendClient() {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY || 're_123456789_YOUR_API_KEY_HERE';
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 // From email - must be from your verified domain or use onboarding@resend.dev for testing
 const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
@@ -210,7 +218,8 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
 
   // Production mode - attempt to send real email
   try {
-    const data = await resend.emails.send({
+    const client = getResendClient();
+    const data = await client.emails.send({
       from: `${APP_NAME} <${FROM_EMAIL}>`,
       to: [actualRecipient],
       subject,
