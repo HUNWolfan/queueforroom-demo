@@ -4,7 +4,6 @@ import { renderToString } from "react-dom/server";
 import { startReminderScheduler } from "./services/reminder-scheduler.server";
 
 // Start the reminder scheduler when server starts
-// NOTE: Scheduler is currently disabled for Cloudflare Workers compatibility
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
   startReminderScheduler();
 }
