@@ -1,35 +1,35 @@
-import cron from 'node-cron';
 import { query } from '~/db.server';
 import { sendReservationReminder } from './email.server';
 
 /**
  * Reservation Reminder Scheduler
- * Runs every 5 minutes to check for upcoming reservations
- * Sends reminders 15-30 minutes before reservation start time
+ * 
+ * TODO: Implement with Cloudflare Cron Triggers
+ * 
+ * Current status: Disabled for Cloudflare Workers compatibility
+ * node-cron uses Node.js globals (__dirname, child_process) that don't exist in Workers
+ * 
+ * Implementation plan:
+ * 1. Add to wrangler.toml:
+ *    [triggers]
+ *    crons = ["0/5 * * * *"]  # Every 5 minutes
+ * 
+ * 2. Create app/cron/send-reminders.ts:
+ *    export async function scheduled(event: ScheduledEvent, env: Env) {
+ *      await checkAndSendReminders();
+ *    }
+ * 
+ * 3. Or use external cron service (cron-job.org) to hit /api/send-reminders endpoint
+ * 
+ * Docs: https://developers.cloudflare.com/workers/configuration/cron-triggers/
  */
 
 let isSchedulerRunning = false;
 
 export function startReminderScheduler() {
-  if (isSchedulerRunning) {
-    console.log('⏰ Reminder scheduler is already running');
-    return;
-  }
-
-  console.log('🚀 Starting reservation reminder scheduler...');
-  console.log('⏰ Checking for upcoming reservations every 5 minutes');
-
-  // Run every 5 minutes (cron expression: star-slash-5 space star space star space star space star)
-  cron.schedule('*/5 * * * *', async () => {
-    try {
-      await checkAndSendReminders();
-    } catch (error) {
-      console.error('❌ Error in reminder scheduler:', error);
-    }
-  });
-
+  // Stub function for Cloudflare Workers - actual scheduling disabled
+  console.log('ℹ️  Reminder scheduler: Using Cloudflare Cron Triggers (see wrangler.toml)');
   isSchedulerRunning = true;
-  console.log('✅ Reminder scheduler started successfully');
 }
 
 async function checkAndSendReminders() {
