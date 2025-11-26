@@ -176,17 +176,19 @@ export default function TourGuide({ userRole = 'user' }: TourGuideProps) {
   });
 
   useEffect(() => {
-    const tourSeen = localStorage.getItem('tourCompleted');
-    if (tourSeen) {
-      setHasSeenTour(true);
-    } else {
-      // Auto-start tour for first-time users after 1 second
-      const timer = setTimeout(() => {
-        setIsActive(true);
-        // Close mobile menu if open
-        closeMobileMenuIfOpen();
-      }, 1000);
-      return () => clearTimeout(timer);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const tourSeen = localStorage.getItem('tourCompleted');
+      if (tourSeen) {
+        setHasSeenTour(true);
+      } else {
+        // Auto-start tour for first-time users after 1 second
+        const timer = setTimeout(() => {
+          setIsActive(true);
+          // Close mobile menu if open
+          closeMobileMenuIfOpen();
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
     }
   }, []);
 
@@ -228,7 +230,9 @@ export default function TourGuide({ userRole = 'user' }: TourGuideProps) {
 
   const completeTour = () => {
     setIsActive(false);
-    localStorage.setItem('tourCompleted', 'true');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('tourCompleted', 'true');
+    }
     setHasSeenTour(true);
   };
 

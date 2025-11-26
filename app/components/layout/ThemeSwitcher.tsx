@@ -6,10 +6,12 @@ export default function ThemeSwitcher() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Load theme from localStorage
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 'dark';
-    setTheme(savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    // Load theme from localStorage (client-only)
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 'dark';
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
   }, []);
 
   // Listen for theme changes from other components (e.g., Settings page)
@@ -28,11 +30,19 @@ export default function ThemeSwitcher() {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
+    
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('theme', newTheme);
+    }
+    
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', newTheme);
+    }
     
     // Dispatch custom event for other components to listen
-    window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+    }
   };
 
   return (

@@ -176,8 +176,10 @@ export default function Settings() {
 
   // Load current theme on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'auto';
-    setCurrentTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'auto');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme') || 'auto';
+      setCurrentTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'auto');
+    }
   }, []);
 
   useEffect(() => {
@@ -185,16 +187,26 @@ export default function Settings() {
       // Apply theme to document
       const newTheme = (actionData as any).theme;
       if (newTheme === 'auto') {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.removeItem('theme');
+        if (typeof document !== 'undefined') {
+          document.documentElement.removeAttribute('data-theme');
+        }
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem('theme');
+        }
         setCurrentTheme('auto');
       } else {
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-theme', newTheme);
+        }
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('theme', newTheme);
+        }
         setCurrentTheme(newTheme);
         
         // Dispatch custom event for ThemeSwitcher to update
-        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
+        }
       }
     }
     
@@ -202,11 +214,19 @@ export default function Settings() {
     if ((actionData as any)?.animationsEnabled !== undefined) {
       const animationsEnabled = (actionData as any).animationsEnabled;
       if (animationsEnabled) {
-        document.documentElement.removeAttribute('data-no-animations');
-        localStorage.removeItem('no-animations');
+        if (typeof document !== 'undefined') {
+          document.documentElement.removeAttribute('data-no-animations');
+        }
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem('no-animations');
+        }
       } else {
-        document.documentElement.setAttribute('data-no-animations', 'true');
-        localStorage.setItem('no-animations', 'true');
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-no-animations', 'true');
+        }
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('no-animations', 'true');
+        }
       }
     }
   }, [actionData]);
