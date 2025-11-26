@@ -3,14 +3,49 @@ import { Form, Link } from "@remix-run/react";
 
 // SSR-safe translation hook
 function useSSRSafeTranslation() {
+  // During SSR, return Hungarian defaults
   if (typeof window === "undefined") {
-    return { t: (key: string) => "" };
+    return { 
+      t: (key: string) => {
+        const translations: Record<string, string> = {
+          "register.title": "Regisztráció",
+          "register.firstName": "Vezetéknév",
+          "register.lastName": "Keresztnév",
+          "register.email": "E-mail cím",
+          "register.password": "Jelszó",
+          "register.confirmPassword": "Jelszó megerősítése",
+          "register.submit": "Regisztráció",
+          "register.hasAccount": "Van már fiókod?",
+          "register.login": "Bejelentkezés",
+        };
+        return translations[key] || "";
+      },
+      i18n: { language: "hu" }
+    };
   }
+  
+  // Client-side: try to load i18next
   try {
     const { useTranslation } = require("react-i18next");
     return useTranslation();
   } catch (e) {
-    return { t: (key: string) => "" };
+    return { 
+      t: (key: string) => {
+        const translations: Record<string, string> = {
+          "register.title": "Regisztráció",
+          "register.firstName": "Vezetéknév",
+          "register.lastName": "Keresztnév",
+          "register.email": "E-mail cím",
+          "register.password": "Jelszó",
+          "register.confirmPassword": "Jelszó megerősítése",
+          "register.submit": "Regisztráció",
+          "register.hasAccount": "Van már fiókod?",
+          "register.login": "Bejelentkezés",
+        };
+        return translations[key] || "";
+      },
+      i18n: { language: "hu" }
+    };
   }
 }
 

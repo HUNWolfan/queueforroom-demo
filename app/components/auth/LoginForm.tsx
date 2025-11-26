@@ -3,17 +3,43 @@ import { Form, Link } from "@remix-run/react";
 
 // SSR-safe translation hook
 function useSSRSafeTranslation() {
-  // During SSR, return empty strings to prevent hydration mismatch
+  // During SSR, return Hungarian defaults to prevent hydration mismatch
   if (typeof window === "undefined") {
-    return { t: (key: string) => "" };
+    return { 
+      t: (key: string) => {
+        const translations: Record<string, string> = {
+          "login.title": "Bejelentkezés",
+          "login.email": "E-mail cím",
+          "login.password": "Jelszó",
+          "login.submit": "Bejelentkezés",
+          "login.noAccount": "Nincs még fiókod?",
+          "login.register": "Regisztráció",
+          "login.forgotPassword": "Elfelejtetted a jelszavad?",
+        };
+        return translations[key] || "";
+      }
+    };
   }
   
-  // Client-side: try to load i18next, fallback to empty strings
+  // Client-side: try to load i18next, fallback to Hungarian
   try {
     const { useTranslation } = require("react-i18next");
     return useTranslation();
   } catch (e) {
-    return { t: (key: string) => "" };
+    return { 
+      t: (key: string) => {
+        const translations: Record<string, string> = {
+          "login.title": "Bejelentkezés",
+          "login.email": "E-mail cím",
+          "login.password": "Jelszó",
+          "login.submit": "Bejelentkezés",
+          "login.noAccount": "Nincs még fiókod?",
+          "login.register": "Regisztráció",
+          "login.forgotPassword": "Elfelejtetted a jelszavad?",
+        };
+        return translations[key] || "";
+      }
+    };
   }
 }
 
