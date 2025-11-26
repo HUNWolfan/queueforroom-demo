@@ -6,7 +6,13 @@ export default defineConfig({
   plugins: [
     remix({
       ignoredRouteFiles: ["**/*.css"],
+      serverModuleFormat: "esm",
     }),
-    tsconfigPaths(), // <-- 2. ÉS EZT A SORT ADD HOZZÁ
+    tsconfigPaths(),
   ],
+  ssr: {
+    resolve: {
+      conditions: ["workerd", "worker", "browser"],
+    },
+  },
 });

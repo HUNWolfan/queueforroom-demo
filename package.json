@@ -15,6 +15,8 @@
     "test:emails": "node --import tsx -r dotenv/config ./app/test-emails.ts"
   },
   "dependencies": {
+    "@remix-run/cloudflare": "^2.17.2",
+    "@remix-run/cloudflare-pages": "^2.17.2",
     "@remix-run/dev": "^2.11.2",
     "@remix-run/node": "^2.17.2",
     "@remix-run/react": "^2.17.2",
