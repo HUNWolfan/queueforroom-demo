@@ -13,11 +13,21 @@
   },
   "login": {
     "title": "Bejelentkezés",
-    "email": "Email",
+    "email": "E-mail cím",
     "password": "Jelszó",
     "submit": "Bejelentkezés",
     "noAccount": "Nincs még fiókod?",
-    "registerLink": "Regisztráció itt"
+    "registerLink": "Regisztráció itt",
+    "welcomeText": "Jelentkezz be a fiókodba, hogy hozzáférj az összes funkcióhoz és kezdd el használni a rendszert.",
+    "subtitle": "Lépj be a fiókodba",
+    "feature": {
+      "map": "Interaktív térkép",
+      "mapDesc": "Böngéssz a termek között vizuális térképen",
+      "quick": "Gyors foglalás",
+      "quickDesc": "Foglalj termet pár kattintással",
+      "notify": "Értesítések",
+      "notifyDesc": "Értesülj a foglalásaidról valós időben"
+    }
   },
   "register": {
     "title": "Regisztráció",
