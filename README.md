@@ -1,6 +1,8 @@
 # QueueForRoom - School Room Reservation System 🎓
 
 > **Status**: ✅ Production Ready (v1.0.0) | 🚧 [Live Demo](https://queueforroom-demo.pages.dev)
+> 
+> Last deployed: November 26, 2025
 
 A bilingual (Hungarian/English) school room reservation system with an interactive SVG-based top-down map interface, comprehensive security features, and modern glass morphism UI design.
 
