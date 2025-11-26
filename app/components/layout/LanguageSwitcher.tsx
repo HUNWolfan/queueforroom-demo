@@ -3,12 +3,14 @@ import { useEffect, useState, useRef } from "react";
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
-  const [currentLang, setCurrentLang] = useState("en");
+  const [currentLang, setCurrentLang] = useState("hu");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("language") || "en";
+    // Detect browser language
+    const browserLang = navigator.language.startsWith('hu') ? 'hu' : 'en';
+    const savedLang = localStorage.getItem("i18nextLng") || browserLang;
     setCurrentLang(savedLang);
     i18n.changeLanguage(savedLang);
   }, [i18n]);
@@ -31,7 +33,8 @@ export default function LanguageSwitcher() {
 
   const switchLanguage = (lang: string) => {
     setIsOpen(false);
-    localStorage.setItem("language", lang);
+    localStorage.setItem("i18nextLng", lang);
+    document.documentElement.setAttribute('lang', lang);
     setCurrentLang(lang);
     i18n.changeLanguage(lang);
   };
