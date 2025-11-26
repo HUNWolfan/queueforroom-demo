@@ -208,9 +208,11 @@ export default function TourGuide({ userRole = 'user' }: TourGuideProps) {
 
   const closeMobileMenuIfOpen = () => {
     // Close mobile hamburger menu by clicking overlay if it exists
-    const mobileOverlay = document.querySelector('.mobile-overlay');
-    if (mobileOverlay) {
-      (mobileOverlay as HTMLElement).click();
+    if (typeof document !== 'undefined') {
+      const mobileOverlay = document.querySelector('.mobile-overlay');
+      if (mobileOverlay) {
+        (mobileOverlay as HTMLElement).click();
+      }
     }
   };
 
@@ -292,6 +294,8 @@ function TourSpotlight({ target }: { target: string }) {
 
   useEffect(() => {
     const updatePosition = () => {
+      if (typeof document === 'undefined' || typeof window === 'undefined') return;
+      
       const element = document.querySelector(target);
       if (element) {
         const rect = element.getBoundingClientRect();
@@ -370,6 +374,8 @@ function TourTooltip({
 
   useEffect(() => {
     const updatePosition = () => {
+      if (typeof document === 'undefined' || typeof window === 'undefined') return;
+      
       const element = document.querySelector(targetElement);
       if (element) {
         const rect = element.getBoundingClientRect();

@@ -192,7 +192,9 @@ export default function Login() {
       if (data.success && data.redirectTo) {
         // Redirect on successful verification
         console.log('Redirecting to:', data.redirectTo);
-        window.location.href = data.redirectTo;
+        if (typeof window !== 'undefined') {
+          window.location.href = data.redirectTo;
+        }
       } else if (data.success && data.message) {
         // Email sent successfully
         console.log('Email code sent successfully');
