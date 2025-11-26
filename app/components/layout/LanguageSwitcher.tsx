@@ -8,11 +8,12 @@ export default function LanguageSwitcher() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Detect browser language
-    const browserLang = navigator.language.startsWith('hu') ? 'hu' : 'en';
-    const savedLang = localStorage.getItem("i18nextLng") || browserLang;
-    setCurrentLang(savedLang);
-    i18n.changeLanguage(savedLang);
+    // Detect browser language (client-side only)
+    const browserLang = typeof navigator !== 'undefined' && navigator.language.startsWith('hu') ? 'hu' : 'en';
+    const savedLang = typeof localStorage !== 'undefined' ? localStorage.getItem("i18nextLng") : null;
+    const lang = savedLang || browserLang;
+    setCurrentLang(lang);
+    i18n.changeLanguage(lang);
   }, [i18n]);
 
   useEffect(() => {
@@ -33,8 +34,12 @@ export default function LanguageSwitcher() {
 
   const switchLanguage = (lang: string) => {
     setIsOpen(false);
-    localStorage.setItem("i18nextLng", lang);
-    document.documentElement.setAttribute('lang', lang);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem("i18nextLng", lang);
+    }
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('lang', lang);
+    }
     setCurrentLang(lang);
     i18n.changeLanguage(lang);
   };

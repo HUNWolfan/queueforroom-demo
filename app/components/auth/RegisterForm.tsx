@@ -204,7 +204,6 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
                   required
                   autoComplete="new-password"
                   minLength={8}
-                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}$"
                   title={t("auth.passwordRequirements")}
                   placeholder="••••••••"
                 />
@@ -239,7 +238,6 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
                   required
                   autoComplete="new-password"
                   minLength={8}
-                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}$"
                   title={t("auth.passwordRequirements")}
                   placeholder="••••••••"
                 />

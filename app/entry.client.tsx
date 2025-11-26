@@ -5,9 +5,9 @@ import i18next from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 
 async function hydrate() {
-  // Detect browser language
-  const browserLang = navigator.language.startsWith('hu') ? 'hu' : 'en';
-  const savedLang = localStorage.getItem("i18nextLng");
+  // Detect browser language (client-side only)
+  const browserLang = typeof navigator !== 'undefined' && navigator.language?.startsWith('hu') ? 'hu' : 'en';
+  const savedLang = typeof localStorage !== 'undefined' ? localStorage.getItem("i18nextLng") : null;
   
   await i18next
     .use(initReactI18next)
@@ -15,7 +15,7 @@ async function hydrate() {
       supportedLngs: ["en", "hu"],
       fallbackLng: "hu",
       defaultNS: "translation",
-      lng: savedLang || browserLang || "hu",
+      lng: savedLang || browserLang,
       interpolation: {
         escapeValue: false,
       },
