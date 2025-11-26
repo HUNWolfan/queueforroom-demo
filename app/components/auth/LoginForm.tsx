@@ -7,7 +7,16 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ errorKey }: LoginFormProps) {
-  const { t } = useTranslation();
+  // Safe fallback for SSR
+  let t: (key: string) => string;
+  try {
+    const translation = useTranslation();
+    t = translation.t;
+  } catch (e) {
+    // SSR fallback - return keys as-is
+    t = (key: string) => key;
+  }
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

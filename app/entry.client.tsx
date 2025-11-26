@@ -2,7 +2,7 @@ import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import i18next from "i18next";
-import { I18nextProvider, initReactI18next } from "react-i18next";
+import { initReactI18next } from "react-i18next";
 
 // Note: We apply theme and language AFTER hydration to prevent SSR mismatch warnings
 // The initial render will match the server HTML, then we update preferences
@@ -36,9 +36,7 @@ async function hydrate() {
     hydrateRoot(
       document,
       <StrictMode>
-        <I18nextProvider i18n={i18next}>
-          <RemixBrowser />
-        </I18nextProvider>
+        <RemixBrowser />
       </StrictMode>
     );
   });

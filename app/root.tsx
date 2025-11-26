@@ -8,6 +8,7 @@ import {
 } from "@remix-run/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { getUserId } from "~/utils/session.server";
 import { getUserById } from "~/services/auth.server";
 import styles from "~/styles/global.css?url";
@@ -77,6 +78,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { user } = useLoaderData<typeof loader>();
   const [isMounted, setIsMounted] = useState(false);
+  
+  // Check if i18next is initialized (client-side only)
+  let isI18nReady = false;
+  try {
+    const { ready } = useTranslation();
+    isI18nReady = ready;
+  } catch (e) {
+    // SSR - i18next not initialized yet
+    isI18nReady = false;
+  }
 
   // Only render client-side components after mount
   useEffect(() => {
@@ -85,10 +96,10 @@ export default function App() {
 
   return (
     <>
-      {isMounted && <SystemBanner />}
+      {isMounted && isI18nReady && <SystemBanner />}
       <Outlet context={{ user }} />
-      {isMounted && user && <TourGuide userRole={user.role} />}
-      {isMounted && <Footer />}
+      {isMounted && isI18nReady && user && <TourGuide userRole={user.role} />}
+      {isMounted && isI18nReady && <Footer />}
     </>
   );
 }

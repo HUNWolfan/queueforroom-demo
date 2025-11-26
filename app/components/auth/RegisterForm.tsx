@@ -7,7 +7,19 @@ interface RegisterFormProps {
 }
 
 export default function RegisterForm({ errorKey }: RegisterFormProps) {
-  const { t, i18n } = useTranslation();
+  // Safe fallback for SSR
+  let t: (key: string) => string;
+  let isHungarian = true; // default fallback
+  try {
+    const translation = useTranslation();
+    t = translation.t;
+    isHungarian = translation.i18n.language === 'hu';
+  } catch (e) {
+    // SSR fallback - return keys as-is
+    t = (key: string) => key;
+    isHungarian = true;
+  }
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,8 +27,6 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
   const [lastName, setLastName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  const isHungarian = i18n.language === 'hu';
 
   return (
     <>
