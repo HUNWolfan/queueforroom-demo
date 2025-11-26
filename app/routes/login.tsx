@@ -16,9 +16,17 @@ import {
 } from "~/services/security.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
-  return json({});
+  try {
+    const userId = await getUserId(request);
+    if (userId) return redirect("/");
+    return json({});
+  } catch (error) {
+    console.error('LOGIN LOADER ERROR:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    // Return empty response instead of crashing
+    return json({});
+  }
 }
 
 export async function action({ request }: ActionFunctionArgs) {

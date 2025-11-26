@@ -20,14 +20,22 @@ export const links = () => [
 ];
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const userId = await getUserId(request);
-  let user = null;
+  try {
+    const userId = await getUserId(request);
+    let user = null;
 
-  if (userId) {
-    user = await getUserById(userId);
+    if (userId) {
+      user = await getUserById(userId);
+    }
+
+    return json({ user });
+  } catch (error) {
+    console.error('ROOT LOADER ERROR:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    // Return empty user instead of crashing
+    return json({ user: null });
   }
-
-  return json({ user });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
