@@ -6,6 +6,10 @@ compatibility_date = "2024-09-23"
 # Enable Node.js compatibility for built-in modules
 compatibility_flags = ["nodejs_compat"]
 
+# Lock Node.js version
+[vars]
+NODE_VERSION = "20"
+
 # Pages configuration
 pages_build_output_dir = "build/client"
 
