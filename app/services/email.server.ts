@@ -18,8 +18,11 @@ function getResendClient() {
   return resend;
 }
 
-// From email - must be from your verified domain or use onboarding@resend.dev for testing
-const FROM_EMAIL = process.env.FROM_EMAIL || 'onboarding@resend.dev';
+// Get email configuration from environment (lazy evaluation)
+function getFromEmail() {
+  return process.env.FROM_EMAIL || 'onboarding@resend.dev';
+}
+
 const APP_NAME = 'QueueForRoom';
 
 interface SendEmailParams {
@@ -192,7 +195,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
     console.log('⚠️  REDIRECTED TO:', actualRecipient, '(Resend free tier limitation)');
   }
   console.log('Subject:', subject);
-  console.log('From:', `${APP_NAME} <${FROM_EMAIL}>`);
+  console.log('From:', `${APP_NAME} <${getFromEmail()}>`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('Content Preview:');
   console.log(text || html.replace(/<[^>]*>/g, '').substring(0, 500));
@@ -220,7 +223,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
   try {
     const client = getResendClient();
     const data = await client.emails.send({
-      from: `${APP_NAME} <${FROM_EMAIL}>`,
+      from: `${APP_NAME} <${getFromEmail()}>`,
       to: [actualRecipient],
       subject,
       html,
