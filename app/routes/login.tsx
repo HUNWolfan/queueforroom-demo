@@ -116,7 +116,17 @@ export default function Login() {
   const actionData = useActionData<typeof action>() as any;
   const [searchParams] = useSearchParams();
   const resetSuccess = searchParams.get("reset") === "success";
-  const { t } = useTranslation();
+  
+  // Safe fallback for SSR - return empty string during SSR to match client structure
+  let t: (key: string) => string;
+  try {
+    const translation = useTranslation();
+    t = translation.t;
+  } catch (e) {
+    // SSR fallback - return empty string to prevent hydration mismatch
+    t = (key: string) => "";
+  }
+  
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [twoFactorError, setTwoFactorError] = useState("");

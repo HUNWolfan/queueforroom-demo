@@ -67,12 +67,24 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Index() {
   const { user } = useOutletContext<any>();
-  const { t, i18n } = useTranslation();
+  
+  // Safe fallback for SSR - return empty string during SSR to match client structure
+  let t: (key: string) => string;
+  let isHungarian = true; // default fallback
+  try {
+    const translation = useTranslation();
+    t = translation.t;
+    isHungarian = translation.i18n.language === 'hu';
+  } catch (e) {
+    // SSR fallback - return empty string to prevent hydration mismatch
+    t = (key: string) => "";
+    isHungarian = true;
+  }
+  
   const { activeReservations, availableRooms, upcomingToday, reservations } = useLoaderData<typeof loader>();
 
   // Helper function to get room name based on current language
   const getRoomName = (room: any) => {
-    const isHungarian = i18n.language === 'hu';
     if (isHungarian && room.room_name_hu) {
       return room.room_name_hu;
     }
@@ -243,20 +255,20 @@ export default function Index() {
                         fontSize: '0.9rem',
                         color: 'var(--text-primary)'
                       }}>
-                        📅 {new Date(reservation.start_time).toLocaleDateString(i18n.language === 'hu' ? 'hu-HU' : 'en-US')}
+                        📅 {new Date(reservation.start_time).toLocaleDateString(isHungarian ? 'hu-HU' : 'en-US')}
                       </div>
                       <div style={{ 
                         fontSize: '0.85rem',
                         color: 'var(--text-secondary)'
                       }}>
                         ⏰ {new Date(reservation.start_time).toLocaleTimeString(
-                          i18n.language === 'hu' ? 'hu-HU' : 'en-US', 
-                          i18n.language === 'hu' 
+                          isHungarian ? 'hu-HU' : 'en-US', 
+                          isHungarian 
                             ? { hour: '2-digit', minute: '2-digit' }
                             : { hour: 'numeric', minute: '2-digit', hour12: true }
                         )} - {new Date(reservation.end_time).toLocaleTimeString(
-                          i18n.language === 'hu' ? 'hu-HU' : 'en-US',
-                          i18n.language === 'hu' 
+                          isHungarian ? 'hu-HU' : 'en-US',
+                          isHungarian 
                             ? { hour: '2-digit', minute: '2-digit' }
                             : { hour: 'numeric', minute: '2-digit', hour12: true }
                         )}

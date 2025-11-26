@@ -7,7 +7,7 @@ interface RegisterFormProps {
 }
 
 export default function RegisterForm({ errorKey }: RegisterFormProps) {
-  // Safe fallback for SSR
+  // Safe fallback for SSR - return empty string during SSR to match client structure
   let t: (key: string) => string;
   let isHungarian = true; // default fallback
   try {
@@ -15,8 +15,8 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
     t = translation.t;
     isHungarian = translation.i18n.language === 'hu';
   } catch (e) {
-    // SSR fallback - return keys as-is
-    t = (key: string) => key;
+    // SSR fallback - return empty string to prevent hydration mismatch
+    t = (key: string) => "";
     isHungarian = true;
   }
   

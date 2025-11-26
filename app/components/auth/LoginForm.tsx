@@ -7,14 +7,14 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ errorKey }: LoginFormProps) {
-  // Safe fallback for SSR
+  // Safe fallback for SSR - return empty string during SSR to match client structure
   let t: (key: string) => string;
   try {
     const translation = useTranslation();
     t = translation.t;
   } catch (e) {
-    // SSR fallback - return keys as-is
-    t = (key: string) => key;
+    // SSR fallback - return empty string to prevent hydration mismatch
+    t = (key: string) => "";
   }
   
   const [email, setEmail] = useState("");
