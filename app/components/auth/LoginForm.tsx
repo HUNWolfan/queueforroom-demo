@@ -1,21 +1,28 @@
 import { useState } from "react";
 import { Form, Link } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+
+// SSR-safe translation hook
+function useSSRSafeTranslation() {
+  // During SSR, return empty strings to prevent hydration mismatch
+  if (typeof window === "undefined") {
+    return { t: (key: string) => "" };
+  }
+  
+  // Client-side: try to load i18next, fallback to empty strings
+  try {
+    const { useTranslation } = require("react-i18next");
+    return useTranslation();
+  } catch (e) {
+    return { t: (key: string) => "" };
+  }
+}
 
 interface LoginFormProps {
   errorKey?: string;
 }
 
 export default function LoginForm({ errorKey }: LoginFormProps) {
-  // Safe fallback for SSR - return empty string during SSR to match client structure
-  let t: (key: string) => string;
-  try {
-    const translation = useTranslation();
-    t = translation.t;
-  } catch (e) {
-    // SSR fallback - return empty string to prevent hydration mismatch
-    t = (key: string) => "";
-  }
+  const { t } = useSSRSafeTranslation();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

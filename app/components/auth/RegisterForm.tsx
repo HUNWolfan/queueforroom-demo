@@ -1,24 +1,26 @@
 import { useState } from "react";
 import { Form, Link } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+
+// SSR-safe translation hook
+function useSSRSafeTranslation() {
+  if (typeof window === "undefined") {
+    return { t: (key: string) => "" };
+  }
+  try {
+    const { useTranslation } = require("react-i18next");
+    return useTranslation();
+  } catch (e) {
+    return { t: (key: string) => "" };
+  }
+}
 
 interface RegisterFormProps {
   errorKey?: string;
 }
 
 export default function RegisterForm({ errorKey }: RegisterFormProps) {
-  // Safe fallback for SSR - return empty string during SSR to match client structure
-  let t: (key: string) => string;
-  let isHungarian = true; // default fallback
-  try {
-    const translation = useTranslation();
-    t = translation.t;
-    isHungarian = translation.i18n.language === 'hu';
-  } catch (e) {
-    // SSR fallback - return empty string to prevent hydration mismatch
-    t = (key: string) => "";
-    isHungarian = true;
-  }
+  const { t, i18n } = useSSRSafeTranslation();
+  const isHungarian = i18n?.language === 'hu' || true; // default to Hungarian
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

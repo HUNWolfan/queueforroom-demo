@@ -1,7 +1,18 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useActionData, useSearchParams, Link, useFetcher } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+// SSR-safe translation hook
+function useSSRSafeTranslation() {
+  if (typeof window === "undefined") {
+    return { t: (key: string) => "" };
+  }
+  try {
+    const { useTranslation } = require("react-i18next");
+    return useTranslation();
+  } catch (e) {
+    return { t: (key: string) => "" };
+  }
+}
 import { useState, useEffect } from "react";
 import { login } from "~/services/auth.server";
 import { createUserSession, getUserId } from "~/utils/session.server";
