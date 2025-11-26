@@ -1,0 +1,28 @@
+import type { AppLoadContext, EntryContext } from "@remix-run/node";
+import { RemixServer } from "@remix-run/react";
+import { renderToString } from "react-dom/server";
+import { startReminderScheduler } from "./services/reminder-scheduler.server";
+
+// Start the reminder scheduler when server starts
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+  startReminderScheduler();
+}
+
+export default function handleRequest(
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext,
+  loadContext: AppLoadContext
+) {
+  const markup = renderToString(
+    <RemixServer context={remixContext} url={request.url} />
+  );
+
+  responseHeaders.set("Content-Type", "text/html");
+
+  return new Response("<!DOCTYPE html>" + markup, {
+    headers: responseHeaders,
+    status: responseStatusCode,
+  });
+}
