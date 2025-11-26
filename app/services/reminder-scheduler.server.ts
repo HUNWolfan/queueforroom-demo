@@ -1,4 +1,13 @@
+// DISABLED FOR CLOUDFLARE WORKERS DEPLOYMENT
+// node-cron uses __dirname and child_process which are not available in Workers runtime
+// TODO: Implement using Cloudflare Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/
+
+/*
 import cron from 'node-cron';
+import { query } from '~/db.server';
+import { sendReservationReminder } from './email.server';
+*/
+
 import { query } from '~/db.server';
 import { sendReservationReminder } from './email.server';
 
@@ -6,11 +15,20 @@ import { sendReservationReminder } from './email.server';
  * Reservation Reminder Scheduler
  * Runs every 5 minutes to check for upcoming reservations
  * Sends reminders 15-30 minutes before reservation start time
+ * 
+ * NOTE: Currently disabled for Cloudflare Workers compatibility
+ * Cron scheduling in serverless requires Cloudflare Cron Triggers
  */
 
 let isSchedulerRunning = false;
 
 export function startReminderScheduler() {
+  console.log('⚠️  Reminder scheduler disabled in serverless environment');
+  console.log('💡 To enable: Configure Cloudflare Cron Triggers in wrangler.toml');
+  // Stub function - does nothing in Cloudflare Workers
+  return;
+  
+  /*
   if (isSchedulerRunning) {
     console.log('⏰ Reminder scheduler is already running');
     return;
@@ -30,6 +48,7 @@ export function startReminderScheduler() {
 
   isSchedulerRunning = true;
   console.log('✅ Reminder scheduler started successfully');
+  */
 }
 
 async function checkAndSendReminders() {
