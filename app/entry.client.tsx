@@ -4,6 +4,21 @@ import { hydrateRoot } from "react-dom/client";
 import i18next from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 
+// Apply theme and language preferences immediately
+if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  try {
+    const theme = localStorage.getItem('theme');
+    if (theme && theme !== 'auto') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    
+    const lang = localStorage.getItem('i18nextLng') || 'hu';
+    document.documentElement.setAttribute('lang', lang);
+  } catch (e) {
+    // Silently fail
+  }
+}
+
 async function hydrate() {
   // Detect browser language (client-side only)
   const browserLang = typeof navigator !== 'undefined' && navigator.language?.startsWith('hu') ? 'hu' : 'en';

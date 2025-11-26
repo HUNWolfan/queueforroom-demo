@@ -38,21 +38,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>" />
         <Meta />
-        <script dangerouslySetInnerHTML={{ 
-          __html: `
-            // Apply theme and language from localStorage IMMEDIATELY to prevent flash
-            (function() {
-              try {
-                const theme = localStorage.getItem('theme');
-                if (theme && theme !== 'auto') {
-                  document.documentElement.setAttribute('data-theme', theme);
-                }
-                const lang = localStorage.getItem('i18nextLng') || 'hu';
-                document.documentElement.setAttribute('lang', lang);
-              } catch (e) {}
-            })();
-          `
-        }} />
         <Links />
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -69,9 +54,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             [data-theme="light"] body {
               background: linear-gradient(135deg, #c5d3e8 0%, #b0bfd4 100%);
             }
-            /* Prevent i18next flash */
-            [data-i18n] { opacity: 0; transition: opacity 0.1s; }
-            [data-i18n].i18n-loaded { opacity: 1; }
           `
         }} />
       </head>
