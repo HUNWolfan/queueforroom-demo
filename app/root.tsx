@@ -7,7 +7,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
 import { getUserId } from "~/utils/session.server";
 import { getUserById } from "~/services/auth.server";
 import styles from "~/styles/global.css?url";
@@ -76,13 +76,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { user } = useLoaderData<typeof loader>();
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Only render client-side components after mount
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <>
-      <SystemBanner />
+      {isMounted && <SystemBanner />}
       <Outlet context={{ user }} />
-      {user && <TourGuide userRole={user.role} />}
-      <Footer />
+      {isMounted && user && <TourGuide userRole={user.role} />}
+      {isMounted && <Footer />}
     </>
   );
 }
