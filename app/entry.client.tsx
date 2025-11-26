@@ -4,20 +4,8 @@ import { hydrateRoot } from "react-dom/client";
 import i18next from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 
-// Apply theme and language preferences immediately
-if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-  try {
-    const theme = localStorage.getItem('theme');
-    if (theme && theme !== 'auto') {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
-    
-    const lang = localStorage.getItem('i18nextLng') || 'hu';
-    document.documentElement.setAttribute('lang', lang);
-  } catch (e) {
-    // Silently fail
-  }
-}
+// Note: We apply theme and language AFTER hydration to prevent SSR mismatch warnings
+// The initial render will match the server HTML, then we update preferences
 
 async function hydrate() {
   // Detect browser language (client-side only)
@@ -57,7 +45,31 @@ async function hydrate() {
 }
 
 if (window.requestIdleCallback) {
-  window.requestIdleCallback(hydrate);
+  window.requestIdleCallback(() => {
+    hydrate();
+    // Apply theme and language preferences AFTER hydration
+    applyUserPreferences();
+  });
 } else {
-  window.setTimeout(hydrate, 1);
+  window.setTimeout(() => {
+    hydrate();
+    // Apply theme and language preferences AFTER hydration
+    applyUserPreferences();
+  }, 1);
+}
+
+function applyUserPreferences() {
+  if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme && theme !== 'auto') {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+      
+      const lang = localStorage.getItem('i18nextLng') || 'hu';
+      document.documentElement.setAttribute('lang', lang);
+    } catch (e) {
+      // Silently fail
+    }
+  }
 }
