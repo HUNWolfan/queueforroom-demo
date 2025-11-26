@@ -60,6 +60,52 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
       {/* Form Section */}
       <div className="auth-form-section">
         <div className="auth-card">
+          {/* Demo Warning Banner */}
+          <div style={{
+            background: 'rgba(255, 152, 0, 0.15)',
+            border: '1px solid rgba(255, 152, 0, 0.5)',
+            borderRadius: '8px',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.75rem'
+          }}>
+            <span style={{ fontSize: '1.5rem' }}>🚧</span>
+            <div style={{ flex: 1 }}>
+              <h4 style={{ 
+                margin: '0 0 0.5rem 0', 
+                color: '#ff9800',
+                fontSize: '0.95rem',
+                fontWeight: '600'
+              }}>
+                {isHungarian ? 'Demo Verzió' : 'Demo Version'}
+              </h4>
+              <p style={{ 
+                margin: 0, 
+                fontSize: '0.85rem',
+                lineHeight: '1.5',
+                color: 'var(--text-primary)'
+              }}>
+                {isHungarian 
+                  ? 'Email megerősítés csak a wrabl.marcell@gmail.com címmel működik. Teszteléshez használd a meglévő demo fiókokat:'
+                  : 'Email verification only works with wrabl.marcell@gmail.com. For testing, use the existing demo accounts:'}
+              </p>
+              <div style={{ 
+                marginTop: '0.5rem',
+                fontSize: '0.8rem',
+                fontFamily: 'monospace',
+                background: 'rgba(0,0,0,0.2)',
+                padding: '0.5rem',
+                borderRadius: '4px'
+              }}>
+                <div><strong>Admin:</strong> admin@test.com / Admin123!</div>
+                <div><strong>Instructor:</strong> instructor@test.com / Instructor123!</div>
+                <div><strong>Student:</strong> student@test.com / Student123!</div>
+              </div>
+            </div>
+          </div>
+          
           <h1>{t("register.title")}</h1>
           <p>Hozz létre egy új fiókot</p>
           
