@@ -13,10 +13,15 @@ function useSSRSafeTranslation() {
           "login.password": "Jelszó",
           "login.submit": "Bejelentkezés",
           "login.noAccount": "Nincs még fiókod?",
-          "login.register": "Regisztráció",
+          "login.registerLink": "Regisztráció itt",
           "login.forgotPassword": "Elfelejtetted a jelszavad?",
+          "auth.showPassword": "Jelszó megjelenítése",
+          "auth.hidePassword": "Jelszó elrejtése",
+          "errors.invalidEmailOrPassword": "Érvénytelen email vagy jelszó",
+          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
+          "errors.accountLocked": "A fiók zárolva van túl sok sikertelen bejelentkezési kísérlet miatt.",
         };
-        return translations[key] || "";
+        return translations[key] || key;
       }
     };
   }
@@ -34,10 +39,15 @@ function useSSRSafeTranslation() {
           "login.password": "Jelszó",
           "login.submit": "Bejelentkezés",
           "login.noAccount": "Nincs még fiókod?",
-          "login.register": "Regisztráció",
+          "login.registerLink": "Regisztráció itt",
           "login.forgotPassword": "Elfelejtetted a jelszavad?",
+          "auth.showPassword": "Jelszó megjelenítése",
+          "auth.hidePassword": "Jelszó elrejtése",
+          "errors.invalidEmailOrPassword": "Érvénytelen email vagy jelszó",
+          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
+          "errors.accountLocked": "A fiók zárolva van túl sok sikertelen bejelentkezési kísérlet miatt.",
         };
-        return translations[key] || "";
+        return translations[key] || key;
       }
     };
   }
@@ -59,34 +69,28 @@ export default function LoginForm({ errorKey }: LoginFormProps) {
       {/* Welcome Section */}
       <div className="auth-welcome">
         <div className="auth-welcome-content">
-          <h1>Üdv újra! 👋</h1>
-          <p>
-            Jelentkezz be a fiókodba, hogy hozzáférj az összes funkcióhoz és
-            kezdd el használni a rendszert.
-          </p>
-          
+          <h1>{t("login.title")} 👋</h1>
+          <p>{t("login.welcomeText") || "Jelentkezz be a fiókodba, hogy hozzáférj az összes funkcióhoz és kezdd el használni a rendszert."}</p>
           <div className="auth-welcome-features">
             <div className="auth-feature">
               <div className="auth-feature-icon">🗺️</div>
               <div className="auth-feature-text">
-                <h3>Interaktív térkép</h3>
-                <p>Böngéssz a termek között vizuális térképen</p>
+                <h3>{t("login.feature.map") || "Interaktív térkép"}</h3>
+                <p>{t("login.feature.mapDesc") || "Böngéssz a termek között vizuális térképen"}</p>
               </div>
             </div>
-            
             <div className="auth-feature">
               <div className="auth-feature-icon">📅</div>
               <div className="auth-feature-text">
-                <h3>Gyors foglalás</h3>
-                <p>Foglalj termet pár kattintással</p>
+                <h3>{t("login.feature.quick") || "Gyors foglalás"}</h3>
+                <p>{t("login.feature.quickDesc") || "Foglalj termet pár kattintással"}</p>
               </div>
             </div>
-            
             <div className="auth-feature">
               <div className="auth-feature-icon">🔔</div>
               <div className="auth-feature-text">
-                <h3>Értesítések</h3>
-                <p>Értesülj a foglalásaidról valós időben</p>
+                <h3>{t("login.feature.notify") || "Értesítések"}</h3>
+                <p>{t("login.feature.notifyDesc") || "Értesülj a foglalásaidról valós időben"}</p>
               </div>
             </div>
           </div>
@@ -97,10 +101,12 @@ export default function LoginForm({ errorKey }: LoginFormProps) {
       <div className="auth-form-section">
         <div className="auth-card">
           <h1>{t("login.title")}</h1>
-          <p>Lépj be a fiókodba</p>
-          
-          {errorKey && <div className="error-message">{t(errorKey)}</div>}
-          
+          <p>{t("login.subtitle") || "Lépj be a fiókodba"}</p>
+          {errorKey && (
+            <div className="error-message" role="alert" aria-live="assertive">
+              {t(errorKey) || t("errors.invalidEmailOrPassword")}
+            </div>
+          )}
           <Form method="post" className="auth-form">
             <div className="form-group">
               <label htmlFor="email">{t("login.email")}</label>
@@ -115,7 +121,6 @@ export default function LoginForm({ errorKey }: LoginFormProps) {
                 placeholder="pelda@email.com"
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="password">{t("login.password")}</label>
               <div className="password-field-wrapper">
@@ -155,12 +160,10 @@ export default function LoginForm({ errorKey }: LoginFormProps) {
                 </Link>
               </div>
             </div>
-
             <button type="submit" className="btn-primary">
               {t("login.submit")}
             </button>
           </Form>
-
           <div className="auth-footer">
             <p>
               {t("login.noAccount")}{" "}

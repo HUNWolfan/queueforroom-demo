@@ -614,7 +614,7 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 10002, // Higher than reservation modal (10001)
+            zIndex: 10002,
             animation: 'fadeIn 0.2s ease-in-out',
           }}
         >
@@ -633,12 +633,14 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
               animation: 'slideInDown 0.3s ease-out',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
             }}
+            role="alert"
+            aria-live="assertive"
           >
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
               {alertMessage.includes('success') || alertMessage.includes('sikeresen') || alertMessage.includes('submitted') || alertMessage.includes('küldve') ? '✅' : '⚠️'}
             </div>
             <p style={{ color: 'var(--text-primary)', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
-              {alertMessage}
+              {t(alertMessage) || alertMessage}
             </p>
             <button 
               onClick={() => setShowAlertModal(false)}

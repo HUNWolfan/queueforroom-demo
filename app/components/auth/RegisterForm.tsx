@@ -9,16 +9,27 @@ function useSSRSafeTranslation() {
       t: (key: string) => {
         const translations: Record<string, string> = {
           "register.title": "Regisztráció",
-          "register.firstName": "Vezetéknév",
-          "register.lastName": "Keresztnév",
+          "register.firstName": "Keresztnév",
+          "register.lastName": "Vezetéknév",
           "register.email": "E-mail cím",
           "register.password": "Jelszó",
           "register.confirmPassword": "Jelszó megerősítése",
           "register.submit": "Regisztráció",
           "register.hasAccount": "Van már fiókod?",
-          "register.login": "Bejelentkezés",
+          "register.loginLink": "Bejelentkezés itt",
+          "auth.showPassword": "Jelszó megjelenítése",
+          "auth.hidePassword": "Jelszó elrejtése",
+          "auth.termsNotice": "A regisztrációval elfogadod a",
+          "auth.terms": "Felhasználási Feltételeket",
+          "auth.acceptableUse": "Elfogadható Használat Irányelveit",
+          "auth.privacyPolicy": "Adatvédelmi Irányelveket",
+          "common.and": "és",
+          "errors.emailAlreadyExists": "Ez az email cím már létezik",
+          "errors.passwordsDoNotMatch": "A jelszavak nem egyeznek",
+          "errors.invalidFormData": "Érvénytelen űrlap adatok",
+          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
         };
-        return translations[key] || "";
+        return translations[key] || key;
       },
       i18n: { language: "hu" }
     };
@@ -33,16 +44,27 @@ function useSSRSafeTranslation() {
       t: (key: string) => {
         const translations: Record<string, string> = {
           "register.title": "Regisztráció",
-          "register.firstName": "Vezetéknév",
-          "register.lastName": "Keresztnév",
+          "register.firstName": "Keresztnév",
+          "register.lastName": "Vezetéknév",
           "register.email": "E-mail cím",
           "register.password": "Jelszó",
           "register.confirmPassword": "Jelszó megerősítése",
           "register.submit": "Regisztráció",
           "register.hasAccount": "Van már fiókod?",
-          "register.login": "Bejelentkezés",
+          "register.loginLink": "Bejelentkezés itt",
+          "auth.showPassword": "Jelszó megjelenítése",
+          "auth.hidePassword": "Jelszó elrejtése",
+          "auth.termsNotice": "A regisztrációval elfogadod a",
+          "auth.terms": "Felhasználási Feltételeket",
+          "auth.acceptableUse": "Elfogadható Használat Irányelveit",
+          "auth.privacyPolicy": "Adatvédelmi Irányelveket",
+          "common.and": "és",
+          "errors.emailAlreadyExists": "Ez az email cím már létezik",
+          "errors.passwordsDoNotMatch": "A jelszavak nem egyeznek",
+          "errors.invalidFormData": "Érvénytelen űrlap adatok",
+          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
         };
-        return translations[key] || "";
+        return translations[key] || key;
       },
       i18n: { language: "hu" }
     };
@@ -156,7 +178,11 @@ export default function RegisterForm({ errorKey }: RegisterFormProps) {
           <h1>{t("register.title")}</h1>
           <p>Hozz létre egy új fiókot</p>
           
-          {errorKey && <div className="error-message">{t(errorKey)}</div>}
+          {errorKey && (
+            <div className="error-message" role="alert" aria-live="assertive">
+              {t(errorKey)}
+            </div>
+          )}
           
           <Form method="post" className="auth-form">
             <div className="form-row">
