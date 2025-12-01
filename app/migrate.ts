@@ -61,6 +61,74 @@ async function migrate() {
     );
   `);
 
+  // Reservation attendees tábla létrehozása (meghívott felhasználók)
+  await query(`
+    CREATE TABLE IF NOT EXISTS reservation_attendees (
+      id SERIAL PRIMARY KEY,
+      reservation_id INTEGER REFERENCES reservations(id) ON DELETE CASCADE,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      status VARCHAR(50) DEFAULT 'invited' CHECK (status IN ('invited', 'confirmed', 'declined')),
+      joined_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(reservation_id, user_id)
+    );
+  `);
+
+  // Indexek létrehozása a reservation_attendees táblához
+  await query(`CREATE INDEX IF NOT EXISTS idx_reservation_attendees_reservation ON reservation_attendees(reservation_id);`);
+  await query(`CREATE INDEX IF NOT EXISTS idx_reservation_attendees_user ON reservation_attendees(user_id);`);
+
+  // Instructor permissions tábla létrehozása (előadói jogosultságok)
+  await query(`
+    CREATE TABLE IF NOT EXISTS instructor_permissions (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+      can_reserve_rooms BOOLEAN DEFAULT true,
+      can_override_reservations BOOLEAN DEFAULT false,
+      granted_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      revoked BOOLEAN DEFAULT false,
+      revoked_at TIMESTAMP,
+      revoked_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Notification settings tábla létrehozása (értesítési beállítások)
+  await query(`
+    CREATE TABLE IF NOT EXISTS notification_settings (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+      email_notifications BOOLEAN DEFAULT true,
+      reservation_reminders BOOLEAN DEFAULT true,
+      reservation_confirmed BOOLEAN DEFAULT true,
+      reservation_cancelled BOOLEAN DEFAULT true,
+      reservation_updated BOOLEAN DEFAULT true,
+      permission_granted BOOLEAN DEFAULT true,
+      permission_rejected BOOLEAN DEFAULT true,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Permission requests tábla létrehozása (jogosultság kérelmek)
+  await query(`
+    CREATE TABLE IF NOT EXISTS permission_requests (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
+      reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      reviewed_at TIMESTAMP,
+      review_note TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Indexek létrehozása
+  await query(`CREATE INDEX IF NOT EXISTS idx_permission_requests_user ON permission_requests(user_id, status);`);
+  await query(`CREATE INDEX IF NOT EXISTS idx_permission_requests_status ON permission_requests(status, created_at DESC);`);
+
   // Session-ök tábla létrehozása
   await query(`
     CREATE TABLE IF NOT EXISTS sessions (
@@ -257,6 +325,14 @@ async function migrate() {
         WHERE table_name='users' AND column_name='preferred_language'
       ) THEN
         ALTER TABLE users ADD COLUMN preferred_language VARCHAR(10) DEFAULT 'en';
+      END IF;
+
+      -- Last login at oszlop hozzáadása
+      IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name='users' AND column_name='last_login_at'
+      ) THEN
+        ALTER TABLE users ADD COLUMN last_login_at TIMESTAMP;
       END IF;
     END $$;
   `);

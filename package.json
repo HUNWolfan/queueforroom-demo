@@ -12,6 +12,7 @@
     "typecheck": "tsc",
     "db:migrate": "node --import tsx -r dotenv/config ./app/migrate.ts",
     "db:seed": "node --import tsx -r dotenv/config ./app/seed.ts",
+    "db:check": "node --import tsx -r dotenv/config ./app/check-db.ts",
     "test:emails": "node --import tsx -r dotenv/config ./app/test-emails.ts"
   },
   "dependencies": {
