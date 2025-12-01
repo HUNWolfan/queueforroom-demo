@@ -533,7 +533,8 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                       const diffMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
                       
                       if (diffMinutes < 30) {
-                        setDurationWarning(t("reservation.minDuration") || "Minimum 30 perc szükséges");
+                        const warningText = t("reservation.minDuration");
+                        setDurationWarning(warningText || "Minimum 30 perc szükséges");
                         
                         // Auto-fix: set to start + 30 minutes, rounded to 15-min interval
                         const autoEnd = new Date(start.getTime() + 30 * 60 * 1000);
