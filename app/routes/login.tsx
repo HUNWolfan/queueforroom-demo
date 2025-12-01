@@ -258,18 +258,11 @@ export default function Login() {
           </div>
         </div>
       )}
-      <LoginForm errorKey={actionData?.errorKey} />
-      {actionData?.notVerified && (
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <Link 
-            to="/resend-verification" 
-            className="btn btn-secondary"
-            style={{ fontSize: '0.9rem' }}
-          >
-            {t("auth.resendEmail")}
-          </Link>
-        </div>
-      )}
+      <LoginForm 
+        errorKey={actionData?.errorKey} 
+        email={actionData?.email}
+        notVerified={actionData?.notVerified}
+      />
 
       {/* 2FA Verification Modal */}
       {show2FAModal && (

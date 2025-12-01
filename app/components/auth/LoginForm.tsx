@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Form, Link } from "@remix-run/react";
+import React, { useState } from "react";
+import { Form, Link, useFetcher } from "@remix-run/react";
 import { getSSRTranslation } from "~/utils/ssr-translations";
 
 // SSR-safe translation hook
@@ -24,14 +24,50 @@ function useSSRSafeTranslation() {
 
 interface LoginFormProps {
   errorKey?: string;
+  email?: string;
+  notVerified?: boolean;
 }
 
-export default function LoginForm({ errorKey }: LoginFormProps) {
+export default function LoginForm({ errorKey, email: initialEmail, notVerified }: LoginFormProps) {
   const { t } = useSSRSafeTranslation();
   
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [cooldownTime, setCooldownTime] = useState(0);
+  
+  const resendFetcher = useFetcher();
+
+  // Cooldown timer
+  React.useEffect(() => {
+    if (cooldownTime > 0) {
+      const timer = setTimeout(() => {
+        setCooldownTime(cooldownTime - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldownTime]);
+
+  // Handle resend result
+  React.useEffect(() => {
+    if (resendFetcher.data) {
+      const data = resendFetcher.data as any;
+      if (data.success) {
+        setCooldownTime(60);
+      } else if (data.waitTime) {
+        setCooldownTime(data.waitTime);
+      }
+    }
+  }, [resendFetcher.data]);
+
+  const handleResendEmail = () => {
+    if (cooldownTime > 0) return;
+    
+    resendFetcher.submit(
+      { email },
+      { method: "post", action: "/api/resend-verification" }
+    );
+  };
 
   return (
     <>
@@ -71,11 +107,70 @@ export default function LoginForm({ errorKey }: LoginFormProps) {
         <div className="auth-card">
           <h1>{t("login.title")}</h1>
           <p>{t("login.subtitle")}</p>
-          {errorKey && (
+          
+          {/* Email verification error with resend button */}
+          {errorKey === "errors.verifyEmailFirst" && (
+            <div className="error-message" role="alert" aria-live="assertive" style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.75rem',
+              alignItems: 'stretch'
+            }}>
+              <div>{t(errorKey)}</div>
+              <button
+                type="button"
+                onClick={handleResendEmail}
+                disabled={cooldownTime > 0 || resendFetcher.state === "submitting"}
+                style={{
+                  background: cooldownTime > 0 ? 'rgba(255,255,255,0.1)' : 'rgba(34, 197, 94, 0.2)',
+                  border: '1px solid rgba(34, 197, 94, 0.4)',
+                  color: cooldownTime > 0 ? 'rgba(255,255,255,0.5)' : '#4ade80',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  fontSize: '0.85rem',
+                  cursor: cooldownTime > 0 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  fontWeight: '500'
+                }}
+              >
+                {resendFetcher.state === "submitting" ? (
+                  "📧 Küldés..."
+                ) : cooldownTime > 0 ? (
+                  `⏱️ Újraküldés ${cooldownTime}s múlva`
+                ) : (
+                  "📧 Nem kaptam meg az emailt - Újraküldés"
+                )}
+              </button>
+              {resendFetcher.data?.success && (
+                <div style={{
+                  background: 'rgba(34, 197, 94, 0.2)',
+                  border: '1px solid rgba(34, 197, 94, 0.4)',
+                  padding: '0.5rem',
+                  borderRadius: '6px',
+                  fontSize: '0.85rem',
+                  color: '#4ade80'
+                }}>
+                  ✅ {resendFetcher.data.message}
+                </div>
+              )}
+              {resendFetcher.data?.error && (
+                <div style={{
+                  fontSize: '0.85rem',
+                  color: '#fca5a5'
+                }}>
+                  ⚠️ {resendFetcher.data.message}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Other errors */}
+          {errorKey && errorKey !== "errors.verifyEmailFirst" && (
             <div className="error-message" role="alert" aria-live="assertive">
               {t(errorKey) || t("errors.invalidEmailOrPassword")}
             </div>
           )}
+          
           <Form method="post" className="auth-form">
             <div className="form-group">
               <label htmlFor="email">{t("login.email")}</label>
