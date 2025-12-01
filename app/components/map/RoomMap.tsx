@@ -204,7 +204,7 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
       if (data.success) {
         const needsPermissionRequest = userRole === 'student' || userRole === 'user';
         const successMsg = needsPermissionRequest
-          ? (data.message || t("permissions.requestSubmitted") || "Permission request submitted!")
+          ? (t("permissions.requestSubmitted") || "Permission request submitted!")
           : (t("reservation.success") || "Reservation created successfully!");
         setAlertMessage(successMsg);
         setShowAlertModal(true);
@@ -462,6 +462,23 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                       setReservationDetails({ ...reservationDetails, startTime: resetValue });
                       setAlertMessage(t("reservation.noPastDates") || "Cannot select past dates. Reset to current time.");
                       setShowAlertModal(true);
+                    } else {
+                      // Round to nearest 15-minute interval
+                      const rounded = new Date(selectedTime);
+                      const minutes = rounded.getMinutes();
+                      const roundedMinutes = Math.ceil(minutes / 15) * 15;
+                      rounded.setMinutes(roundedMinutes);
+                      rounded.setSeconds(0);
+                      rounded.setMilliseconds(0);
+                      
+                      const year = rounded.getFullYear();
+                      const month = String(rounded.getMonth() + 1).padStart(2, '0');
+                      const day = String(rounded.getDate()).padStart(2, '0');
+                      const hours = String(rounded.getHours()).padStart(2, '0');
+                      const mins = String(rounded.getMinutes()).padStart(2, '0');
+                      const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                      
+                      setReservationDetails({ ...reservationDetails, startTime: roundedValue });
                     }
                   }}
                   className="modern-datetime-input"
@@ -510,6 +527,23 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                       setReservationDetails({ ...reservationDetails, endTime: resetValue });
                       setAlertMessage(t("reservation.noPastDates") || "Cannot select past dates. Reset to current time.");
                       setShowAlertModal(true);
+                    } else {
+                      // Round to nearest 15-minute interval
+                      const rounded = new Date(selectedTime);
+                      const minutes = rounded.getMinutes();
+                      const roundedMinutes = Math.ceil(minutes / 15) * 15;
+                      rounded.setMinutes(roundedMinutes);
+                      rounded.setSeconds(0);
+                      rounded.setMilliseconds(0);
+                      
+                      const year = rounded.getFullYear();
+                      const month = String(rounded.getMonth() + 1).padStart(2, '0');
+                      const day = String(rounded.getDate()).padStart(2, '0');
+                      const hours = String(rounded.getHours()).padStart(2, '0');
+                      const mins = String(rounded.getMinutes()).padStart(2, '0');
+                      const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                      
+                      setReservationDetails({ ...reservationDetails, endTime: roundedValue });
                     }
                   }}
                   className="modern-datetime-input"
