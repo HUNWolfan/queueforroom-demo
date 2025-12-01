@@ -36,6 +36,7 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [durationWarning, setDurationWarning] = useState("");
   const [reservationDetails, setReservationDetails] = useState({
     startTime: "",
     endTime: "",
@@ -471,14 +472,34 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                       rounded.setSeconds(0);
                       rounded.setMilliseconds(0);
                       
-                      const year = rounded.getFullYear();
-                      const month = String(rounded.getMonth() + 1).padStart(2, '0');
-                      const day = String(rounded.getDate()).padStart(2, '0');
-                      const hours = String(rounded.getHours()).padStart(2, '0');
-                      const mins = String(rounded.getMinutes()).padStart(2, '0');
-                      const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
-                      
-                      setReservationDetails({ ...reservationDetails, startTime: roundedValue });
+                      // Check if rounded time is now in the past
+                      if (rounded < now) {
+                        // Use next 15-min interval from current time instead
+                        const roundedNow = new Date(now);
+                        const nowMinutes = roundedNow.getMinutes();
+                        const nowRoundedMinutes = Math.ceil(nowMinutes / 15) * 15;
+                        roundedNow.setMinutes(nowRoundedMinutes);
+                        roundedNow.setSeconds(0);
+                        roundedNow.setMilliseconds(0);
+                        
+                        const year = roundedNow.getFullYear();
+                        const month = String(roundedNow.getMonth() + 1).padStart(2, '0');
+                        const day = String(roundedNow.getDate()).padStart(2, '0');
+                        const hours = String(roundedNow.getHours()).padStart(2, '0');
+                        const mins = String(roundedNow.getMinutes()).padStart(2, '0');
+                        const resetValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                        
+                        setReservationDetails({ ...reservationDetails, startTime: resetValue });
+                      } else {
+                        const year = rounded.getFullYear();
+                        const month = String(rounded.getMonth() + 1).padStart(2, '0');
+                        const day = String(rounded.getDate()).padStart(2, '0');
+                        const hours = String(rounded.getHours()).padStart(2, '0');
+                        const mins = String(rounded.getMinutes()).padStart(2, '0');
+                        const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                        
+                        setReservationDetails({ ...reservationDetails, startTime: roundedValue });
+                      }
                     }
                   }}
                   className="modern-datetime-input"
@@ -502,7 +523,42 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                   value={reservationDetails.endTime}
                   min={reservationDetails.startTime || getMinDateTime()}
                   step="900"
-                  onChange={(value) => setReservationDetails({ ...reservationDetails, endTime: value })}
+                  onChange={(value) => {
+                    setReservationDetails({ ...reservationDetails, endTime: value });
+                    
+                    // Real-time validation: check if duration is at least 30 minutes
+                    if (reservationDetails.startTime && value) {
+                      const start = new Date(reservationDetails.startTime);
+                      const end = new Date(value);
+                      const diffMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+                      
+                      if (diffMinutes < 30) {
+                        setDurationWarning(t("reservation.minDuration") || "Minimum 30 perc szükséges");
+                        
+                        // Auto-fix: set to start + 30 minutes, rounded to 15-min interval
+                        const autoEnd = new Date(start.getTime() + 30 * 60 * 1000);
+                        const minutes = autoEnd.getMinutes();
+                        const roundedMinutes = Math.ceil(minutes / 15) * 15;
+                        autoEnd.setMinutes(roundedMinutes);
+                        autoEnd.setSeconds(0);
+                        autoEnd.setMilliseconds(0);
+                        
+                        const year = autoEnd.getFullYear();
+                        const month = String(autoEnd.getMonth() + 1).padStart(2, '0');
+                        const day = String(autoEnd.getDate()).padStart(2, '0');
+                        const hours = String(autoEnd.getHours()).padStart(2, '0');
+                        const mins = String(autoEnd.getMinutes()).padStart(2, '0');
+                        const fixedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                        
+                        setTimeout(() => {
+                          setReservationDetails({ ...reservationDetails, endTime: fixedValue });
+                          setDurationWarning("");
+                        }, 1000);
+                      } else {
+                        setDurationWarning("");
+                      }
+                    }
+                  }}
                   onBlur={(value) => {
                     const selectedTime = new Date(value);
                     const now = new Date();
@@ -536,18 +592,49 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                       rounded.setSeconds(0);
                       rounded.setMilliseconds(0);
                       
-                      const year = rounded.getFullYear();
-                      const month = String(rounded.getMonth() + 1).padStart(2, '0');
-                      const day = String(rounded.getDate()).padStart(2, '0');
-                      const hours = String(rounded.getHours()).padStart(2, '0');
-                      const mins = String(rounded.getMinutes()).padStart(2, '0');
-                      const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
-                      
-                      setReservationDetails({ ...reservationDetails, endTime: roundedValue });
+                      // Check if rounded time is now in the past
+                      if (rounded < now) {
+                        // Use current time + 1 hour rounded to next 15-min interval
+                        const roundedNow = new Date(now.getTime() + 60 * 60 * 1000);
+                        const nowMinutes = roundedNow.getMinutes();
+                        const nowRoundedMinutes = Math.ceil(nowMinutes / 15) * 15;
+                        roundedNow.setMinutes(nowRoundedMinutes);
+                        roundedNow.setSeconds(0);
+                        roundedNow.setMilliseconds(0);
+                        
+                        const year = roundedNow.getFullYear();
+                        const month = String(roundedNow.getMonth() + 1).padStart(2, '0');
+                        const day = String(roundedNow.getDate()).padStart(2, '0');
+                        const hours = String(roundedNow.getHours()).padStart(2, '0');
+                        const mins = String(roundedNow.getMinutes()).padStart(2, '0');
+                        const resetValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                        
+                        setReservationDetails({ ...reservationDetails, endTime: resetValue });
+                      } else {
+                        const year = rounded.getFullYear();
+                        const month = String(rounded.getMonth() + 1).padStart(2, '0');
+                        const day = String(rounded.getDate()).padStart(2, '0');
+                        const hours = String(rounded.getHours()).padStart(2, '0');
+                        const mins = String(rounded.getMinutes()).padStart(2, '0');
+                        const roundedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                        
+                        setReservationDetails({ ...reservationDetails, endTime: roundedValue });
+                      }
                     }
                   }}
                   className="modern-datetime-input"
                 />
+                {durationWarning && (
+                  <small style={{ 
+                    fontSize: '0.85rem', 
+                    color: '#ff4444', 
+                    display: 'block', 
+                    marginTop: '0.5rem',
+                    fontWeight: '600'
+                  }}>
+                    ⚠️ {durationWarning}
+                  </small>
+                )}
                 <small style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginTop: '0.5rem' }}>
                   {t("reservation.quarterHourOnly") || "Only 15-minute intervals (e.g., 13:00, 13:15, 13:30, 13:45)"}
                 </small>

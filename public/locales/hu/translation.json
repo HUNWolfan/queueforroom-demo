@@ -182,6 +182,7 @@
     "linkCopied": "Link vágólapra másolva!",
     "noPurpose": "Nincs megadva cél",
     "quarterHourOnly": "Csak 15 perces intervallumok (pl. 13:00, 13:15, 13:30, 13:45)",
+    "minDuration": "Minimum 30 perc szükséges",
     "noPastDates": "Nem választható múltbeli dátum. Visszaállítva a jelenlegi időre.",
     "yourReservation": "A foglalásod",
     "joinInvitation": "Meghívtak!",

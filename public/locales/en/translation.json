@@ -172,6 +172,7 @@
     "linkCopied": "Link copied to clipboard!",
     "noPurpose": "No purpose specified",
     "quarterHourOnly": "Only 15-minute intervals (e.g., 1:00 PM, 1:15 PM, 1:30 PM, 1:45 PM)",
+    "minDuration": "Minimum 30 minutes required",
     "noPastDates": "Cannot select past dates. Reset to current time.",
     "yourReservation": "Your Reservation",
     "joinInvitation": "You've Been Invited!",
