@@ -27,22 +27,22 @@ const scrollbarStyles = `
     .notification-panel {
       position: fixed !important;
       top: 0 !important;
-      left: 0 !important;
       right: 0 !important;
       bottom: 0 !important;
+      left: auto !important;
       width: 85% !important;
       max-width: 350px !important;
       height: 100vh !important;
       max-height: 100vh !important;
       border-radius: 0 !important;
       border: none !important;
-      border-right: 1px solid var(--glass-border) !important;
+      border-left: 1px solid var(--glass-border) !important;
       z-index: 10001 !important;
-      transform-origin: left center !important;
+      transform-origin: right center !important;
     }
     
     .notification-panel.closing {
-      transform: translateX(-100%) !important;
+      transform: translateX(100%) !important;
     }
   }
 
@@ -110,9 +110,9 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
     const currentTouch = e.targetTouches[0].clientX;
     setTouchEnd(currentTouch);
     
-    // Calculate drag offset (only allow left swipe)
+    // Calculate drag offset (only allow right swipe)
     const distance = touchStart !== null ? currentTouch - touchStart : 0;
-    if (distance < 0) {
+    if (distance > 0) {
       setDragOffset(distance);
     }
   };
@@ -123,10 +123,10 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
       return;
     }
     
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
+    const distance = touchEnd - touchStart;
+    const isRightSwipe = distance > minSwipeDistance;
     
-    if (isLeftSwipe) {
+    if (isRightSwipe) {
       onClose();
     }
     
@@ -257,29 +257,29 @@ export default function NotificationPanel({ isOpen, onClose }: NotificationPanel
         onTouchEnd={isMobile ? onTouchEnd : undefined}
         style={{
           position: 'fixed',
-          top: isMobile ? 0 : '70px',
-          left: isMobile ? 0 : 'auto',
-          right: isMobile ? 'auto' : '20px',
+          top: isMobile ? 0 : '60px',
+          right: isMobile ? 0 : '20px',
+          left: isMobile ? 'auto' : 'auto',
           width: isMobile ? '85%' : '380px',
           maxWidth: isMobile ? '350px' : '380px',
-          height: isMobile ? '100vh' : 'calc(100vh - 70px)',
-          maxHeight: isMobile ? '100vh' : 'calc(100vh - 70px)',
+          height: isMobile ? '100vh' : 'calc(100vh - 60px - 50px)',
+          maxHeight: isMobile ? '100vh' : 'calc(100vh - 60px - 50px)',
           background: 'rgba(42, 36, 56, 0.98)',
           backdropFilter: 'blur(20px)',
           border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
-          borderRight: isMobile ? '1px solid var(--glass-border)' : 'none',
+          borderLeft: isMobile ? '1px solid var(--glass-border)' : 'none',
           borderRadius: isMobile ? 0 : '12px',
-          boxShadow: isMobile ? '5px 0 30px rgba(0, 0, 0, 0.3)' : '0 12px 48px rgba(0, 0, 0, 0.5)',
+          boxShadow: isMobile ? '-5px 0 30px rgba(0, 0, 0, 0.3)' : '0 12px 48px rgba(0, 0, 0, 0.5)',
           zIndex: isMobile ? 10001 : 1000,
           display: 'flex',
           flexDirection: 'column',
           opacity: isOpen ? 1 : 0,
           transform: isMobile 
-            ? (isOpen ? `translateX(${dragOffset}px)` : 'translateX(-100%)') 
+            ? (isOpen ? `translateX(${dragOffset}px)` : 'translateX(100%)') 
             : (isOpen ? 'translateY(0) scale(1)' : 'translateY(-20px) scale(0.95)'),
           pointerEvents: isOpen ? 'auto' : 'none',
           transition: dragOffset !== 0 ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          transformOrigin: isMobile ? 'left center' : 'top right',
+          transformOrigin: isMobile ? 'right center' : 'top right',
         }}
         onClick={(e) => e.stopPropagation()}
       >

@@ -424,13 +424,21 @@ export default function Footer() {
         /* Mobile responsive */
         @media (max-width: 640px) {
           footer {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.75rem !important;
+            padding: 0.25rem 0.75rem !important;
+            font-size: 0.7rem !important;
+            flex-direction: column !important;
+            gap: 0.25rem !important;
+            align-items: flex-start !important;
           }
           
           footer button {
-            font-size: 0.75rem !important;
-            padding: 0.4rem 0.8rem !important;
+            font-size: 0.7rem !important;
+            padding: 0.25rem 0.6rem !important;
+          }
+          
+          footer > div {
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
           }
         }
 
