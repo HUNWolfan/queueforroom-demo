@@ -525,40 +525,7 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                   step="900"
                   onChange={(value) => {
                     setReservationDetails({ ...reservationDetails, endTime: value });
-                    
-                    // Real-time validation: check if duration is at least 30 minutes
-                    if (reservationDetails.startTime && value) {
-                      const start = new Date(reservationDetails.startTime);
-                      const end = new Date(value);
-                      const diffMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
-                      
-                      if (diffMinutes < 30) {
-                        const warningText = t("reservation.minDuration");
-                        setDurationWarning(warningText || "Minimum 30 perc szükséges");
-                        
-                        // Auto-fix: set to start + 30 minutes, rounded to 15-min interval
-                        const autoEnd = new Date(start.getTime() + 30 * 60 * 1000);
-                        const minutes = autoEnd.getMinutes();
-                        const roundedMinutes = Math.ceil(minutes / 15) * 15;
-                        autoEnd.setMinutes(roundedMinutes);
-                        autoEnd.setSeconds(0);
-                        autoEnd.setMilliseconds(0);
-                        
-                        const year = autoEnd.getFullYear();
-                        const month = String(autoEnd.getMonth() + 1).padStart(2, '0');
-                        const day = String(autoEnd.getDate()).padStart(2, '0');
-                        const hours = String(autoEnd.getHours()).padStart(2, '0');
-                        const mins = String(autoEnd.getMinutes()).padStart(2, '0');
-                        const fixedValue = `${year}-${month}-${day}T${hours}:${mins}`;
-                        
-                        setTimeout(() => {
-                          setReservationDetails({ ...reservationDetails, endTime: fixedValue });
-                          setDurationWarning("");
-                        }, 1000);
-                      } else {
-                        setDurationWarning("");
-                      }
-                    }
+                    setDurationWarning(""); // Clear warning while typing
                   }}
                   onBlur={(value) => {
                     const selectedTime = new Date(value);
@@ -612,6 +579,38 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
                         
                         setReservationDetails({ ...reservationDetails, endTime: resetValue });
                       } else {
+                        // Check duration after rounding
+                        if (reservationDetails.startTime) {
+                          const start = new Date(reservationDetails.startTime);
+                          const diffMinutes = (rounded.getTime() - start.getTime()) / (1000 * 60);
+                          
+                          if (diffMinutes < 30) {
+                            const warningText = i18n.language === 'hu' ? 'Minimum 30 perc szükséges' : 'Minimum 30 minutes required';
+                            setDurationWarning(warningText);
+                            
+                            // Auto-fix after 1.5 seconds: set to start + 30 minutes
+                            setTimeout(() => {
+                              const autoEnd = new Date(start.getTime() + 30 * 60 * 1000);
+                              const autoMinutes = autoEnd.getMinutes();
+                              const autoRoundedMinutes = Math.ceil(autoMinutes / 15) * 15;
+                              autoEnd.setMinutes(autoRoundedMinutes);
+                              autoEnd.setSeconds(0);
+                              autoEnd.setMilliseconds(0);
+                              
+                              const year = autoEnd.getFullYear();
+                              const month = String(autoEnd.getMonth() + 1).padStart(2, '0');
+                              const day = String(autoEnd.getDate()).padStart(2, '0');
+                              const hours = String(autoEnd.getHours()).padStart(2, '0');
+                              const mins = String(autoEnd.getMinutes()).padStart(2, '0');
+                              const fixedValue = `${year}-${month}-${day}T${hours}:${mins}`;
+                              
+                              setReservationDetails({ ...reservationDetails, endTime: fixedValue });
+                              setDurationWarning("");
+                            }, 1500);
+                            return;
+                          }
+                        }
+                        
                         const year = rounded.getFullYear();
                         const month = String(rounded.getMonth() + 1).padStart(2, '0');
                         const day = String(rounded.getDate()).padStart(2, '0');
