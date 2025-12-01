@@ -6,7 +6,7 @@ A Railway dashboard-on az alábbi environment variable-eket kell beállítanod:
 
 ### Database
 ```
-DATABASE_URL=postgresql://neondb_owner:npg_2bdACvRGalW6@ep-red-meadow-agtf116u-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://neondb_owner:YOUR_DATABASE_PASSWORD@ep-red-meadow-agtf116u-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
 ### Session
@@ -21,10 +21,10 @@ NODE_ENV=production
 
 ### Email Configuration (Resend API)
 ```
-RESEND_API_KEY=re_fVABvx9X_MDSGhXnsLcTL9ektLusjTAaW
+RESEND_API_KEY=re_YOUR_RESEND_API_KEY_HERE
 FROM_EMAIL=onboarding@resend.dev
 SEND_REAL_EMAILS=true
-TEST_EMAIL_OVERRIDE=wrabl.marcell@gmail.com
+TEST_EMAIL_OVERRIDE=your-email@example.com
 ```
 
 ## Deployment Checklist

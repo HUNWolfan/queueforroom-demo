@@ -9,7 +9,7 @@ npm install
 # 2. Környezeti változók beállítása (.env fájl)
 DATABASE_URL=postgresql://user:password@localhost:5432/queueforroom
 SESSION_SECRET=your-secret-key-here
-RESEND_API_KEY=re_fVABvx9X_MDSGhXnsLcTL9ektLusjTAaW
+RESEND_API_KEY=re_YOUR_RESEND_API_KEY_HERE
 
 # 3. Adatbázis migrációk futtatása
 npm run db:migrate

@@ -4,13 +4,13 @@
 
 ### Jelenlegi Helyzet
 - **API Kulcs**: ✅ Beállítva és működik (`re_fVABvx9X...`)
-- **Regisztrált email**: `wrabl.marcell@gmail.com`
+- **Regisztrált email**: `your-email@example.com`
 - **Probléma**: Ingyenes fiók csak a regisztrált email címedre tud küldeni
 
 ### 🔴 Resend Ingyenes Tier Korlátozások
 
 **Mit TUDSZ csinálni:**
-- ✅ Email küldés a saját regisztrált címedre: `wrabl.marcell@gmail.com`
+- ✅ Email küldés a saját regisztrált címedre: `your-email@example.com`
 - ✅ 100 email/nap (3,000/hónap)
 - ✅ Tesztelés és fejlesztés
 
@@ -21,7 +21,7 @@
 ### A Resend hibaüzenete:
 ```
 validation_error: You can only send testing emails to your own email address 
-(wrabl.marcell@gmail.com). To send emails to other recipients, please verify 
+(your-email@example.com). To send emails to other recipients, please verify 
 a domain at resend.com/domains, and change the 'from' address to an email 
 using this domain.
 ```
@@ -234,7 +234,7 @@ node --import tsx -r dotenv/config test-email.ts
 ```env
 # .env fájl (JELENLEG)
 NODE_ENV=development  # Email preview konzolban
-RESEND_API_KEY=re_fVABvx9X_MDSGhXnsLcTL9ektLusjTAaW
+RESEND_API_KEY=re_YOUR_RESEND_API_KEY_HERE
 FROM_EMAIL=onboarding@resend.dev
 ```
 

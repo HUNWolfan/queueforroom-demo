@@ -34,7 +34,7 @@ export default function Footer() {
         bottom: 0,
         left: 0,
         right: 0,
-        padding: '0.5rem 1.5rem',
+        padding: '0.3rem 1.5rem',
         background: 'var(--glass-bg)',
         backdropFilter: 'blur(20px)',
         borderTop: '1px solid var(--glass-border)',

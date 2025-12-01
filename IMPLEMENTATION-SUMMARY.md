@@ -364,7 +364,7 @@ CSS:
 ### 1. `.env`
 ```
 # Sor 7
-RESEND_API_KEY=re_fVABvx9X_MDSGhXnsLcTL9ektLusjTAaW
+RESEND_API_KEY=re_YOUR_RESEND_API_KEY_HERE
 ```
 **Változás**: Placeholder API kulcs → production API kulcs
 

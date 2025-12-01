@@ -48,9 +48,9 @@ const scrollbarStyles = `
 
   @media (min-width: 1025px) {
     .notification-panel {
-      top: 70px !important;
-      height: calc(100vh - 70px) !important;
-      max-height: calc(100vh - 70px) !important;
+      top: 60px !important;
+      height: calc(100vh - 60px - 50px) !important;
+      max-height: calc(100vh - 60px - 50px) !important;
     }
   }
 

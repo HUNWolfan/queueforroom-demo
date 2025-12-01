@@ -145,7 +145,7 @@ These notifications appear in the bell icon dropdown in the header with real-tim
 ## 🧪 Testing the Emails
 
 ### Development Mode (Console Preview)
-Since you're using Resend's free tier which only sends to `wrabl.marcell@gmail.com`, the app is configured in development mode:
+Since you're using Resend's free tier which only sends to your verified email, the app is configured in development mode:
 
 1. **Environment Variable**: Set `NODE_ENV=development` in your `.env` file
 2. **Email Preview**: All emails will be logged to the console instead of being sent

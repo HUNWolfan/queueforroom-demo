@@ -36,6 +36,7 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
   const [durationWarning, setDurationWarning] = useState("");
   const [reservationDetails, setReservationDetails] = useState({
     startTime: "",
@@ -47,15 +48,30 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
   const fetcher = useFetcher();
   const navigate = useNavigate();
 
-  // Detect mobile on client-side only
+  // Detect mobile and theme on client-side only
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
     
+    const checkTheme = () => {
+      const theme = document.body.getAttribute('data-theme');
+      setIsLightMode(theme === 'light');
+    };
+    
     checkMobile();
+    checkTheme();
+    
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      observer.disconnect();
+    };
   }, []);
 
   // Helper function to get room name based on current language
@@ -354,13 +370,15 @@ export default function RoomMap({ rooms, userRole = 'student', onRoomSelect }: R
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            background: 'var(--glass-bg)',
+            background: isLightMode ? 'rgba(248, 249, 250, 0.98)' : 'rgba(26, 24, 37, 0.95)',
             backdropFilter: 'blur(20px)',
             border: '1px solid var(--glass-border)',
             borderRadius: '12px',
-            padding: '2rem',
+            padding: isMobile ? '1.5rem' : '2rem',
             maxWidth: '500px',
             width: '90%',
+            maxHeight: isMobile ? '85vh' : 'auto',
+            overflowY: isMobile ? 'auto' : 'visible',
             zIndex: 1001,
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}>
