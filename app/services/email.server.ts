@@ -222,7 +222,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
   // Production mode - attempt to send real email
   try {
     const client = getResendClient();
-    const data = await client.emails.send({
+    const response = await client.emails.send({
       from: `${APP_NAME} <${getFromEmail()}>`,
       to: [actualRecipient],
       subject,
@@ -231,11 +231,13 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
     });
 
     console.log('✅ Email sent successfully to', actualRecipient);
-    if (data && 'id' in data) {
-      console.log('   Message ID:', data.id);
+    
+    // Resend returns { data: { id: "..." }, error: null }
+    if (response && response.data && 'id' in response.data) {
+      console.log('   Message ID:', response.data.id);
     }
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-    return { success: true, data };
+    return { success: true, data: response.data };
   } catch (error: any) {
     console.error('❌ Email sending failed:', error);
     

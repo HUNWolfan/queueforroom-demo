@@ -1,36 +1,13 @@
 import { useState } from "react";
 import { Form, Link } from "@remix-run/react";
+import { getSSRTranslation } from "~/utils/ssr-translations";
 
 // SSR-safe translation hook
 function useSSRSafeTranslation() {
-  // During SSR, return Hungarian defaults to prevent hydration mismatch
+  // During SSR, return Hungarian defaults using centralized translations
   if (typeof window === "undefined") {
     return { 
-      t: (key: string) => {
-        const translations: Record<string, string> = {
-          "login.title": "Bejelentkezés",
-          "login.email": "E-mail cím",
-          "login.password": "Jelszó",
-          "login.submit": "Bejelentkezés",
-          "login.noAccount": "Nincs még fiókod?",
-          "login.registerLink": "Regisztráció itt",
-          "login.welcomeText": "Jelentkezz be a fiókodba, hogy hozzáférj az összes funkcióhoz és kezdd el használni a rendszert.",
-          "login.subtitle": "Lépj be a fiókodba",
-          "login.feature.map": "Interaktív térkép",
-          "login.feature.mapDesc": "Böngéssz a termek között vizuális térképen",
-          "login.feature.quick": "Gyors foglalás",
-          "login.feature.quickDesc": "Foglalj termet pár kattintással",
-          "login.feature.notify": "Értesítések",
-          "login.feature.notifyDesc": "Értesülj a foglalásaidról valós időben",
-          "auth.forgotPassword": "Elfelejtetted a jelszavad?",
-          "auth.showPassword": "Jelszó megjelenítése",
-          "auth.hidePassword": "Jelszó elrejtése",
-          "errors.invalidEmailOrPassword": "Érvénytelen email vagy jelszó",
-          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
-          "errors.accountLocked": "A fiók zárolva van túl sok sikertelen bejelentkezési kísérlet miatt.",
-        };
-        return translations[key] || key;
-      }
+      t: (key: string) => getSSRTranslation(key, 'hu')
     };
   }
   
@@ -40,31 +17,7 @@ function useSSRSafeTranslation() {
     return useTranslation();
   } catch (e) {
     return { 
-      t: (key: string) => {
-        const translations: Record<string, string> = {
-          "login.title": "Bejelentkezés",
-          "login.email": "E-mail cím",
-          "login.password": "Jelszó",
-          "login.submit": "Bejelentkezés",
-          "login.noAccount": "Nincs még fiókod?",
-          "login.registerLink": "Regisztráció itt",
-          "login.welcomeText": "Jelentkezz be a fiókodba, hogy hozzáférj az összes funkcióhoz és kezdd el használni a rendszert.",
-          "login.subtitle": "Lépj be a fiókodba",
-          "login.feature.map": "Interaktív térkép",
-          "login.feature.mapDesc": "Böngéssz a termek között vizuális térképen",
-          "login.feature.quick": "Gyors foglalás",
-          "login.feature.quickDesc": "Foglalj termet pár kattintással",
-          "login.feature.notify": "Értesítések",
-          "login.feature.notifyDesc": "Értesülj a foglalásaidról valós időben",
-          "auth.forgotPassword": "Elfelejtetted a jelszavad?",
-          "auth.showPassword": "Jelszó megjelenítése",
-          "auth.hidePassword": "Jelszó elrejtése",
-          "errors.invalidEmailOrPassword": "Érvénytelen email vagy jelszó",
-          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
-          "errors.accountLocked": "A fiók zárolva van túl sok sikertelen bejelentkezési kísérlet miatt.",
-        };
-        return translations[key] || key;
-      }
+      t: (key: string) => getSSRTranslation(key, 'hu')
     };
   }
 }

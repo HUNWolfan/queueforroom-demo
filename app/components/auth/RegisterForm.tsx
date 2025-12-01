@@ -1,37 +1,13 @@
 import { useState } from "react";
 import { Form, Link } from "@remix-run/react";
+import { getSSRTranslation } from "~/utils/ssr-translations";
 
 // SSR-safe translation hook
 function useSSRSafeTranslation() {
-  // During SSR, return Hungarian defaults
+  // During SSR, return Hungarian defaults using centralized translations
   if (typeof window === "undefined") {
     return { 
-      t: (key: string) => {
-        const translations: Record<string, string> = {
-          "register.title": "Regisztráció",
-          "register.firstName": "Keresztnév",
-          "register.lastName": "Vezetéknév",
-          "register.email": "E-mail cím",
-          "register.password": "Jelszó",
-          "register.confirmPassword": "Jelszó megerősítése",
-          "register.submit": "Regisztráció",
-          "register.hasAccount": "Van már fiókod?",
-          "register.loginLink": "Bejelentkezés itt",
-          "auth.showPassword": "Jelszó megjelenítése",
-          "auth.hidePassword": "Jelszó elrejtése",
-          "auth.passwordRequirements": "Legalább 8 karakter nagybetűvel, kisbetűvel, számmal és speciális karakterrel",
-          "auth.termsNotice": "A regisztrációval elfogadod a",
-          "auth.terms": "Felhasználási Feltételeket",
-          "auth.acceptableUse": "Elfogadható Használat Irányelveit",
-          "auth.privacyPolicy": "Adatvédelmi Irányelveket",
-          "common.and": "és",
-          "errors.emailAlreadyExists": "Ez az email cím már létezik",
-          "errors.passwordsDoNotMatch": "A jelszavak nem egyeznek",
-          "errors.invalidFormData": "Érvénytelen űrlap adatok",
-          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
-        };
-        return translations[key] || key;
-      },
+      t: (key: string) => getSSRTranslation(key, 'hu'),
       i18n: { language: "hu" }
     };
   }
@@ -42,32 +18,7 @@ function useSSRSafeTranslation() {
     return useTranslation();
   } catch (e) {
     return { 
-      t: (key: string) => {
-        const translations: Record<string, string> = {
-          "register.title": "Regisztráció",
-          "register.firstName": "Keresztnév",
-          "register.lastName": "Vezetéknév",
-          "register.email": "E-mail cím",
-          "register.password": "Jelszó",
-          "register.confirmPassword": "Jelszó megerősítése",
-          "register.submit": "Regisztráció",
-          "register.hasAccount": "Van már fiókod?",
-          "register.loginLink": "Bejelentkezés itt",
-          "auth.showPassword": "Jelszó megjelenítése",
-          "auth.hidePassword": "Jelszó elrejtése",
-          "auth.passwordRequirements": "Legalább 8 karakter nagybetűvel, kisbetűvel, számmal és speciális karakterrel",
-          "auth.termsNotice": "A regisztrációval elfogadod a",
-          "auth.terms": "Felhasználási Feltételeket",
-          "auth.acceptableUse": "Elfogadható Használat Irányelveit",
-          "auth.privacyPolicy": "Adatvédelmi Irányelveket",
-          "common.and": "és",
-          "errors.emailAlreadyExists": "Ez az email cím már létezik",
-          "errors.passwordsDoNotMatch": "A jelszavak nem egyeznek",
-          "errors.invalidFormData": "Érvénytelen űrlap adatok",
-          "errors.allFieldsRequired": "Minden mező kitöltése kötelező",
-        };
-        return translations[key] || key;
-      },
+      t: (key: string) => getSSRTranslation(key, 'hu'),
       i18n: { language: "hu" }
     };
   }
