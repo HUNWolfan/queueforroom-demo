@@ -27,7 +27,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       rm.name as room_name, rm.name_en as room_name_en, rm.name_hu as room_name_hu, 
       rm.capacity, rm.floor,
       (1 + (SELECT COUNT(*) FROM reservation_attendees ra WHERE ra.reservation_id = r.id AND ra.status = 'confirmed')) as confirmed_count,
-      (SELECT COUNT(*) FROM reservation_invites ri WHERE ri.reservation_id = r.id) as invited_count
+      (SELECT COUNT(*) FROM reservation_attendees ri WHERE ri.reservation_id = r.id) as invited_count
      FROM reservations r
      JOIN rooms rm ON r.room_id = rm.id
      WHERE r.user_id = $1
