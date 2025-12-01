@@ -33,6 +33,7 @@
   "auth": {
     "checkYourEmail": "Check Your Email",
     "verificationEmailSent": "We've sent a verification link to your email address.",
+    "checkEmail": "Check your email!",
     "clickVerificationLink": "Please click the link in the email to activate your account.",
     "linkExpiresIn24Hours": "The verification link will expire in 24 hours.",
     "didntReceiveEmail": "Didn't receive the email?",

@@ -14,12 +14,12 @@ export default function VerifyEmailSent() {
     }}>
       <div className="auth-card" style={{ maxWidth: '500px', width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
+          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📧</div>
           <h1 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>
-            Email Megerősítve!
+            {t("auth.checkEmail") || "Ellenőrizd az email fiókodat!"}
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-            Az email címed sikeresen megerősítésre került. Most már bejelentkezhetsz a fiókodba.
+            {t("auth.verificationEmailSent") || "Megerősítő emailt küldtünk a megadott címre. Kérlek kattints a benne lévő linkre a regisztráció befejezéséhez."}
           </p>
         </div>
 
@@ -33,7 +33,7 @@ export default function VerifyEmailSent() {
             padding: '0.875rem 1.5rem'
           }}
         >
-          Továbba a Bejelentkezéshez
+          {t("auth.backToLogin") || "Vissza a bejelentkezéshez"}
         </Link>
       </div>
     </div>

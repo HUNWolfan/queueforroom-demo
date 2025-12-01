@@ -43,6 +43,7 @@
   "auth": {
     "checkYourEmail": "Ellenőrizd az Emailedet",
     "verificationEmailSent": "Elküldtünk egy megerősítő linket az email címedre.",
+    "checkEmail": "Ellenőrizd az email fiókodat!",
     "clickVerificationLink": "Kérjük, kattints az emailben található linkre a fiókod aktiválásához.",
     "linkExpiresIn24Hours": "A megerősítő link 24 órán belül lejár.",
     "didntReceiveEmail": "Nem kaptad meg az emailt?",
