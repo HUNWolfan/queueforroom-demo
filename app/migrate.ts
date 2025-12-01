@@ -235,6 +235,50 @@ async function migrate() {
   // Index létrehozása a notifications táblához (gyorsabb lekérdezések)
   await query(`CREATE INDEX IF NOT EXISTS idx_user_notifications ON notifications(user_id, is_read, created_at DESC);`);
 
+  // Reservation requests tábla létrehozása (engedélykérések)
+  await query(`
+    CREATE TABLE IF NOT EXISTS reservation_requests (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      room_id INTEGER REFERENCES rooms(id) ON DELETE CASCADE,
+      start_time TIMESTAMP NOT NULL,
+      end_time TIMESTAMP NOT NULL,
+      purpose TEXT,
+      attendees INTEGER DEFAULT 1,
+      status VARCHAR(50) DEFAULT 'pending',
+      reviewed_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      reviewed_at TIMESTAMP,
+      review_note TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Indexek létrehozása a reservation_requests táblához
+  await query(`CREATE INDEX IF NOT EXISTS idx_reservation_requests_user ON reservation_requests(user_id);`);
+  await query(`CREATE INDEX IF NOT EXISTS idx_reservation_requests_status ON reservation_requests(status);`);
+
+  // System settings tábla (rendszerbeállítások)
+  await query(`
+    CREATE TABLE IF NOT EXISTS system_settings (
+      id SERIAL PRIMARY KEY,
+      setting_key VARCHAR(100) UNIQUE NOT NULL,
+      setting_value TEXT NOT NULL,
+      description TEXT,
+      updated_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Alapértelmezett beállítások beszúrása
+  await query(`
+    INSERT INTO system_settings (setting_key, setting_value, description)
+    VALUES 
+      ('min_reservation_minutes', '30', 'Minimum foglalási idő percben'),
+      ('max_reservation_minutes', '120', 'Maximum foglalási idő percben')
+    ON CONFLICT (setting_key) DO NOTHING;
+  `);
+
   // Új oszlopok hozzáadása, ha még nem léteznek (kompatibilitás régi adatbázissal)
   await query(`
     DO $$ 
