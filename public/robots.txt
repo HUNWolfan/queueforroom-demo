@@ -1,0 +1,9 @@
+# QueueForRoom - Room Reservation System
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /logout
+Disallow: /login
+Disallow: /register
+
+Sitemap: https://queueforroom-demo-production.up.railway.app/sitemap.xml

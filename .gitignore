@@ -1,0 +1,15 @@
+node_modules
+
+/.cache
+/build
+.env
+.env.local
+.env.production
+.DS_Store
+
+# Sensitive documentation (local only)
+Informatikai-Biztonsagi-Elemzes.md
+
+# Railway setup files with sensitive data
+RAILWAY-SETUP.md
+EMAIL-SETUP.md

@@ -1,0 +1,23 @@
+# Cloudflare Pages configuration for Remix SSR
+
+name = "queueforroom-demo"
+compatibility_date = "2024-11-26"
+
+# Enable Node.js compatibility for built-in modules
+compatibility_flags = ["nodejs_compat"]
+
+# Lock Node.js version
+[vars]
+NODE_VERSION = "20"
+
+# Pages configuration
+pages_build_output_dir = "build/client"
+
+# Cron Triggers - Run reservation reminders every 5 minutes
+# Note: Cron triggers work on Cloudflare Workers, not Pages
+# To enable this, you'll need to deploy as a Worker or use an external cron service
+# [triggers]
+# crons = ["*/5 * * * *"]  # Every 5 minutes
+
+# Note: This file is primarily for the compatibility flags.
+# Most Pages settings are configured in the Cloudflare dashboard.
