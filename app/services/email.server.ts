@@ -180,22 +180,25 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const hasValidKey = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_123456789_YOUR_API_KEY_HERE';
   
-  // RESEND FREE TIER: Can only send to verified email address (wrabl.marcell@gmail.com)
+  // RESEND FREE TIER: Can only send to verified email address
   // Override recipient for testing if needed
-  const testEmail = process.env.TEST_EMAIL_OVERRIDE || 'wrabl.marcell@gmail.com';
-  const shouldSendRealEmail = process.env.SEND_REAL_EMAILS === 'true';
+  const testEmail = process.env.TEST_EMAIL_OVERRIDE || process.env.VERIFIED_EMAIL || 'wrabl.marcell@gmail.com';
+  const shouldSendRealEmail = process.env.SEND_REAL_EMAILS === 'true' && hasValidKey && !isDevelopment;
   const actualRecipient = shouldSendRealEmail ? testEmail : to;
   
   // Always log email for debugging
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`📧 EMAIL ${shouldSendRealEmail ? 'SENDING' : 'PREVIEW'}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('Mode:', isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION');
+  console.log('Send Real Emails:', shouldSendRealEmail);
+  console.log('Has Valid API Key:', hasValidKey);
   console.log('Intended Recipient:', to);
   if (shouldSendRealEmail && actualRecipient !== to) {
     console.log('⚠️  REDIRECTED TO:', actualRecipient, '(Resend free tier limitation)');
   }
   console.log('Subject:', subject);
-  console.log('From:', `${APP_NAME} <${getFromEmail()}>`);
+  console.log('From:', `${APP_NAME} <${getFromEmail()}>`)
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('Content Preview:');
   console.log(text || html.replace(/<[^>]*>/g, '').substring(0, 500));
@@ -207,10 +210,17 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams) {
       console.log('⚠️  To enable real email sending:');
       console.log('1. Sign up at https://resend.com');
       console.log('2. Get your API key from https://resend.com/api-keys');
-      console.log('3. Set SEND_REAL_EMAILS=true in .env');
-      console.log('4. Verify a domain at https://resend.com/domains for production');
+      console.log('3. Set RESEND_API_KEY in .env');
+      console.log('4. Set NODE_ENV=production and SEND_REAL_EMAILS=true');
+      console.log('5. Verify a domain at https://resend.com/domains for production');
+    } else if (isDevelopment) {
+      console.log('ℹ️  Development mode: Emails shown in console only');
+      console.log('   To send real emails:');
+      console.log('   1. Set NODE_ENV=production in .env');
+      console.log('   2. Set SEND_REAL_EMAILS=true in .env');
+      console.log('   Note: Free tier can only send to:', testEmail);
     } else {
-      console.log('ℹ️  Note: Email preview mode active.');
+      console.log('ℹ️  Email preview mode: SEND_REAL_EMAILS is not true');
       console.log('   Set SEND_REAL_EMAILS=true in .env to send real emails.');
       console.log('   Free tier: Emails will be sent to', testEmail);
     }
