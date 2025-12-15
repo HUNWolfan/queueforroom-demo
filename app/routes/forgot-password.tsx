@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { query } from "~/db.server";
 import { generateShareToken } from "~/utils/crypto.server";
 import { sendPasswordResetEmail } from "~/services/email.server";
+import { getBaseUrl } from "~/utils/url.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -40,7 +41,7 @@ export async function action({ request }: ActionFunctionArgs) {
     [userResult.rows[0].id, resetToken, expiresAt]
   );
 
-  const baseUrl = new URL(request.url).origin;
+  const baseUrl = getBaseUrl(request);
   
   // Send email using Resend
   const emailResult = await sendPasswordResetEmail(email, resetToken, baseUrl);

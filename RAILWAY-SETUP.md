@@ -19,12 +19,19 @@ SESSION_SECRET=k5X5n9rDBQ3fqJGwGK61le4Ndj9ecXcm
 NODE_ENV=production
 ```
 
+### Base URL (FONTOS!)
+```
+BASE_URL=https://queueforroom-production.up.railway.app
+```
+⚠️ **Állítsd be a Railway deployment URL-edre!** Ez biztosítja, hogy az email linkek a Railway oldalra mutassanak, nem localhostra.
+
 ### Email Configuration (Resend API)
 ```
 RESEND_API_KEY=re_YOUR_RESEND_API_KEY_HERE
 FROM_EMAIL=onboarding@resend.dev
 SEND_REAL_EMAILS=true
 TEST_EMAIL_OVERRIDE=your-email@example.com
+VERIFIED_EMAIL=your-email@example.com
 ```
 
 ## Deployment Checklist

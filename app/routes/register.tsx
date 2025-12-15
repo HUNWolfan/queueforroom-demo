@@ -8,6 +8,7 @@ import { sendWelcomeEmail } from "~/services/email.server";
 import { validatePasswordStrength } from "~/services/security.server";
 import crypto from "crypto";
 import { query } from "~/db.server";
+import { getBaseUrl } from "~/utils/url.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await getUserId(request);
@@ -83,7 +84,7 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   // Get base URL
-  const baseUrl = new URL(request.url).origin;
+  const baseUrl = getBaseUrl(request);
 
   // Send welcome email with verification link (non-blocking)
   sendWelcomeEmail(email, firstName, verificationToken, baseUrl, preferredLanguage as 'en' | 'hu')

@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import bcrypt from "bcryptjs";
 import { sendAdminRegistrationEmail } from "~/services/email.server";
 import crypto from "crypto";
+import { getBaseUrl } from "~/utils/url.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const userId = await requireUserId(request);
@@ -90,7 +91,7 @@ export async function action({ request }: ActionFunctionArgs) {
       );
 
       // Send notification email to the new user
-      const baseUrl = new URL(request.url).origin;
+      const baseUrl = getBaseUrl(request);
       sendAdminRegistrationEmail(
         email as string,
         firstName as string,

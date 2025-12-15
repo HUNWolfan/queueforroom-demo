@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { query } from "~/db.server";
 import { sendWelcomeEmail } from "~/services/email.server";
 import crypto from "crypto";
+import { getBaseUrl } from "~/utils/url.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return json({});
@@ -66,7 +67,7 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   // Get base URL
-  const baseUrl = new URL(request.url).origin;
+  const baseUrl = getBaseUrl(request);
   const language = (user.preferred_language || 'en') as 'en' | 'hu';
 
   // Send verification email
